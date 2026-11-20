@@ -240,12 +240,47 @@
       .progress { margin-top: 2rem; height: 1rem; width: 100%; overflow: hidden; border-radius: 999px; background: rgba(255,244,220,0.25); }
       .progress > div { height: 100%; border-radius: 999px; background: var(--cempasuchil); transition: width 0.5s; }
       .progress-msg { font-family: var(--font-display); margin-top: 0.75rem; font-size: 1.25rem; font-weight: 800; color: var(--cempasuchil); }
-      .stamps { margin-top: 2.25rem; display: flex; flex-wrap: wrap; gap: 0.625rem; list-style: none; padding: 0; }
-      @media (min-width: 640px) { .stamps { gap: 0.75rem; } }
-      .stamps li { display: flex; height: 3.5rem; width: 3.5rem; align-items: center; justify-content: center; border-radius: 999px; border: 2px solid rgba(255,244,220,0.8); font-family: var(--font-display); font-size: 1rem; font-weight: 800; color: var(--masa); }
-      @media (min-width: 640px) { .stamps li { height: 4rem; width: 4rem; } }
-      .stamps li.full { border-color: var(--cempasuchil); background: var(--cempasuchil); color: var(--cacao); }
-      .stamps li.free { font-size: 0.8rem; }
+      .stamps { margin-top: 2.25rem; display: flex; flex-wrap: wrap; gap: 0.5rem 0.75rem; list-style: none; padding: 0; }
+      .stamps li { display: flex; flex-direction: column; width: 3.25rem; align-items: center; justify-content: flex-start; gap: 0.15rem; }
+      @media (min-width: 640px) { .stamps li { width: 3.75rem; } .stamps li svg { width: 40px; height: 40px; } }
+      .stamps .sello-txt { font-size: 0.65rem; font-weight: 800; letter-spacing: 0.03em; text-transform: uppercase; color: rgba(255,244,220,0.85); }
+      .stamps li.free.full .sello-txt { color: var(--cempasuchil); }
+      .stamps li.nuevo svg { animation: sello-pop 0.6s ease; }
+      .stamps li.free.full svg { animation: sello-latido 0.9s ease-in-out infinite alternate; }
+      @keyframes sello-pop { 0% { transform: scale(0.3) rotate(-24deg); } 60% { transform: scale(1.18) rotate(4deg); } 100% { transform: scale(1) rotate(0deg); } }
+      @keyframes sello-latido { from { transform: scale(1); } to { transform: scale(1.1); } }
+
+      /* El grano que se mueve */
+      .logo-cualli .vapor path { animation: vaporcito 2.8s ease-in-out infinite; }
+      .logo-cualli .vapor .v2 { animation-delay: 0.4s; }
+      .logo-cualli .vapor .v3 { animation-delay: 0.8s; }
+      @keyframes vaporcito { 0%, 100% { opacity: 0.35; transform: translateY(0.8px); } 50% { opacity: 1; transform: translateY(-1.4px); } }
+      .logo-cualli .grano-saludo { transform-box: fill-box; transform-origin: 50% 60%; animation: saludo-grano 1.8s ease-in-out 0.35s 1 both; }
+      @keyframes saludo-grano { 0%, 100% { transform: rotate(0deg); } 18% { transform: rotate(-10deg); } 42% { transform: rotate(8deg); } 66% { transform: rotate(-5deg); } 84% { transform: rotate(2deg); } }
+
+      /* Carrusel de Lo bueno de hoy */
+      .hoy-carousel { margin-top: 1.5rem; }
+      .hoy-viewport { overflow: hidden; border-radius: 1.5rem; }
+      .hoy-track { display: flex; transition: transform 0.55s ease; }
+      .hoy-track > li { flex: 0 0 100%; }
+      .hoy-controls { margin-top: 1rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+      .hoy-dots { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+      .hoy-dot { height: 0.75rem; width: 0.75rem; min-height: 0.75rem; border-radius: 999px; border: 2px solid var(--cacao); background: transparent; padding: 0; cursor: pointer; }
+      .hoy-dot[aria-current="true"] { background: var(--cacao); }
+      .hoy-btns { display: flex; gap: 0.5rem; flex-shrink: 0; }
+      .hoy-btn { height: 2.75rem; width: 2.75rem; border-radius: 999px; border: 2px solid var(--cacao); background: #fff; color: var(--cacao); font-size: 1.375rem; font-weight: 700; line-height: 1; cursor: pointer; }
+
+      /* Celebración de la cuponera */
+      .confeti { position: fixed; inset: 0; overflow: hidden; pointer-events: none; z-index: 80; }
+      .confeti i { position: absolute; top: -6vh; display: block; animation-name: caer; animation-timing-function: cubic-bezier(0.2, 0.6, 0.6, 1); animation-fill-mode: forwards; }
+      @keyframes caer { to { transform: translateY(118vh) rotate(620deg); } }
+
+      @media (prefers-reduced-motion: reduce) {
+        html { scroll-behavior: auto; }
+        .logo-cualli .vapor path, .logo-cualli .grano-saludo, .stamps li.nuevo svg, .stamps li.free.full svg { animation: none !important; }
+        .hoy-track { transition: none; }
+        .progress > div { transition: none; }
+      }
 
       /* Paneles del equipo */
       .panel-box { border-radius: 2rem; border: 2px solid var(--cacao); background: #fff; padding: 1.5rem; }
@@ -278,7 +313,7 @@
     <header class="site">
       <div class="wrap header-in">
         <a href="#inicio" class="brand" aria-label="Cualli, ir al inicio">
-          <svg viewBox="0 0 64 64" width="36" height="36" aria-hidden="true"><g fill="none" stroke="#3b2218" stroke-width="3.6" stroke-linecap="round"><path d="M13.5 18 6.5 12"/><path d="M19.5 11 15 4"/><path d="M27 7.5 28.5 2"/></g><path d="M40 44 55 58 34 50Z" fill="#3b2218"/><g transform="rotate(-18 35 31)"><ellipse cx="35" cy="31" rx="16.5" ry="21.5" fill="#3b2218"/><path d="M35 14c-5 5.5 5 9.5 0 15-4.5 5.5-2.5 12 0 19" fill="none" stroke="#fff4dc" stroke-width="4" stroke-linecap="round"/></g></svg>
+          <svg class="logo-cualli" viewBox="0 0 64 64" width="36" height="36" aria-hidden="true"><g class="vapor" fill="none" stroke="#3b2218" stroke-width="3.6" stroke-linecap="round"><path class="v1" d="M13.5 18 6.5 12"/><path class="v2" d="M19.5 11 15 4"/><path class="v3" d="M27 7.5 28.5 2"/></g><g class="grano-saludo"><path d="M40 44 55 58 34 50Z" fill="#3b2218"/><g transform="rotate(-18 35 31)"><ellipse cx="35" cy="31" rx="16.5" ry="21.5" fill="#3b2218"/><path d="M35 14c-5 5.5 5 9.5 0 15-4.5 5.5-2.5 12 0 19" fill="none" stroke="#fff4dc" stroke-width="4" stroke-linecap="round"/></g></g></svg>
           <span class="name">Cualli</span>
         </a>
         <nav class="main" aria-label="Navegación principal" id="nav-desktop"></nav>
@@ -399,7 +434,7 @@
     <footer class="site">
       <div class="wrap footer-in">
         <span style="display:flex;align-items:center;gap:0.5rem">
-          <svg viewBox="0 0 64 64" width="32" height="32" aria-hidden="true"><g fill="none" stroke="#f2a81d" stroke-width="3.6" stroke-linecap="round"><path d="M13.5 18 6.5 12"/><path d="M19.5 11 15 4"/><path d="M27 7.5 28.5 2"/></g><path d="M40 44 55 58 34 50Z" fill="#f2a81d"/><g transform="rotate(-18 35 31)"><ellipse cx="35" cy="31" rx="16.5" ry="21.5" fill="#f2a81d"/><path d="M35 14c-5 5.5 5 9.5 0 15-4.5 5.5-2.5 12 0 19" fill="none" stroke="#fff4dc" stroke-width="4" stroke-linecap="round"/></g></svg>
+          <svg class="logo-cualli" viewBox="0 0 64 64" width="32" height="32" aria-hidden="true"><g class="vapor" fill="none" stroke="#f2a81d" stroke-width="3.6" stroke-linecap="round"><path class="v1" d="M13.5 18 6.5 12"/><path class="v2" d="M19.5 11 15 4"/><path class="v3" d="M27 7.5 28.5 2"/></g><g class="grano-saludo"><path d="M40 44 55 58 34 50Z" fill="#f2a81d"/><g transform="rotate(-18 35 31)"><ellipse cx="35" cy="31" rx="16.5" ry="21.5" fill="#f2a81d"/><path d="M35 14c-5 5.5 5 9.5 0 15-4.5 5.5-2.5 12 0 19" fill="none" stroke="#fff4dc" stroke-width="4" stroke-linecap="round"/></g></g></svg>
           <span class="font-display" style="font-size:1.5rem;font-weight:800">Cualli</span>
         </span>
         <p class="font-display" style="font-size:1.125rem;font-weight:700;margin:0">Cuéntanos algo bueno.</p>
@@ -522,6 +557,7 @@
         return sb("noticias?select=id,texto,tipo,descuento,evidencia_url,creado_en,cliente_id,clientes(nombre,apodo)&order=creado_en.desc&limit=30")
           .then(function (rows) { noticiasAll = rows || []; renderHoy(); renderMuro(); renderNoticiaForm(); renderPedirForm(); })
           .catch(function () {
+            detenerCarrusel();
             $("hoy-body").innerHTML = '<p class="mt-6 muted">No pudimos cargar las noticias de hoy. <button type="button" class="link-cafetal" style="background:none;border:none;cursor:pointer;font:inherit;padding:0" onclick="cargarNoticias()">Reintentar</button></p>';
             $("muro").innerHTML = '<p class="mt-4 muted">No pudimos cargar las noticias. <button type="button" class="link-cafetal" style="background:none;border:none;cursor:pointer;font:inherit;padding:0" onclick="cargarNoticias()">Reintentar</button></p>';
           });
@@ -609,24 +645,73 @@
       }
 
       /* ---------- Lo bueno de hoy + muro ---------- */
-      function tarjetaNoticia(n) {
+      var hoyIdx = 0, hoyTotal = 0, hoyTimer = null;
+      var reduceMotion = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+      function detenerCarrusel() { if (hoyTimer) { clearInterval(hoyTimer); hoyTimer = null; } }
+      function mostrarHoy(i) {
+        if (!hoyTotal) return;
+        hoyIdx = ((i % hoyTotal) + hoyTotal) % hoyTotal;
+        var track = $("hoy-track");
+        if (track) track.style.transform = "translateX(-" + (hoyIdx * 100) + "%)";
+        Array.prototype.forEach.call(document.querySelectorAll(".hoy-dot"), function (d, j) {
+          d.setAttribute("aria-current", j === hoyIdx ? "true" : "false");
+        });
+      }
+      function iniciarCarrusel() {
+        detenerCarrusel();
+        if (reduceMotion || hoyTotal < 2) return;
+        hoyTimer = setInterval(function () {
+          if (document.hidden || !$("hoy-track")) return;
+          mostrarHoy(hoyIdx + 1);
+        }, 5000);
+      }
+      function tarjetaNoticia(n, extra) {
         var chip = n.descuento > 0
           ? '<span class="chip chip-sol">−' + n.descuento + '% · ' + esc(tipoLabel(n.tipo)) + '</span>'
           : '<span class="chip">' + esc(tipoLabel(n.tipo)) + '</span>';
         var ev = esUrl(n.evidencia_url)
           ? '<a href="' + esc(n.evidencia_url) + '" target="_blank" rel="noreferrer" class="link-cafetal" style="margin-top:0.75rem">Ver la evidencia</a>' : "";
-        return '<li class="news-card"><div class="news-top">' + chip + '<time class="news-time">' + esc(formatFecha(n.creado_en)) + '</time></div>' +
+        return '<li class="news-card' + (extra ? " " + extra : "") + '"><div class="news-top">' + chip + '<time class="news-time">' + esc(formatFecha(n.creado_en)) + '</time></div>' +
           '<p class="news-text">' + esc(n.texto) + '</p>' + ev +
           '<p class="news-author">— ' + esc(firmaDeNoticia(n)) + '</p></li>';
       }
       function renderHoy() {
+        detenerCarrusel();
         var hoy = noticiasAll.filter(function (n) { return esHoy(n.creado_en); });
         if (!hoy.length) {
+          hoyTotal = 0;
           $("hoy-body").innerHTML = '<p class="mt-6" style="max-width:32rem;font-size:1.125rem;line-height:1.6;color:rgba(59,34,24,0.75)">Hoy todavía nadie ha contado algo bueno. El primero puede ser el tuyo.</p>';
           return;
         }
-        $("hoy-body").innerHTML = '<ul class="news-grid" style="list-style:none;padding:0">' + hoy.slice(0, 6).map(tarjetaNoticia).join("") + '</ul>' +
+        hoyTotal = hoy.length; hoyIdx = 0;
+        var slides = hoy.map(function (n) { return tarjetaNoticia(n, "hoy-slide"); }).join("");
+        var controles = "";
+        if (hoyTotal > 1) {
+          var dots = hoy.map(function (n, i) {
+            return '<button type="button" class="hoy-dot" data-hoy-dot="' + i + '" aria-current="' + (i === 0) + '" aria-label="Ver la noticia ' + (i + 1) + ' de ' + hoyTotal + '"></button>';
+          }).join("");
+          controles = '<div class="hoy-controls"><div class="hoy-dots" role="group" aria-label="Elegir noticia de hoy">' + dots + '</div>' +
+            '<div class="hoy-btns"><button type="button" class="hoy-btn" id="hoy-prev" aria-label="Noticia anterior">‹</button>' +
+            '<button type="button" class="hoy-btn" id="hoy-next" aria-label="Noticia siguiente">›</button></div></div>';
+        }
+        $("hoy-body").innerHTML =
+          '<div class="hoy-carousel" id="hoy-carousel" role="region" aria-roledescription="carrusel" aria-label="Lo bueno de hoy, una noticia a la vez">' +
+          '<div class="hoy-viewport"><ul class="hoy-track" id="hoy-track" style="list-style:none;padding:0;margin:0">' + slides + '</ul></div>' +
+          controles + '</div>' +
           '<p class="mt-6"><a href="#noticias" class="link-cafetal">Ver todas las buenas noticias de la comunidad →</a></p>';
+        if (hoyTotal > 1) {
+          var car = $("hoy-carousel");
+          $("hoy-prev").addEventListener("click", function () { mostrarHoy(hoyIdx - 1); iniciarCarrusel(); });
+          $("hoy-next").addEventListener("click", function () { mostrarHoy(hoyIdx + 1); iniciarCarrusel(); });
+          Array.prototype.forEach.call(car.querySelectorAll("[data-hoy-dot]"), function (d) {
+            d.addEventListener("click", function () { mostrarHoy(Number(d.getAttribute("data-hoy-dot"))); iniciarCarrusel(); });
+          });
+          car.addEventListener("mouseenter", detenerCarrusel);
+          car.addEventListener("mouseleave", iniciarCarrusel);
+          car.addEventListener("focusin", detenerCarrusel);
+          car.addEventListener("focusout", iniciarCarrusel);
+        }
+        iniciarCarrusel();
       }
       function renderMuro() {
         if (!noticiasAll.length) {
@@ -807,6 +892,7 @@
         btn.disabled = true; btn.textContent = "Registrando…";
         var activo = descuentoActivoHoy();
         var noticia = activo > 0 ? miNoticiaDeHoy() : null;
+        var cupAntes = miCuponera();
         sb("pedidos", { method: "POST", prefer: "return=representation", body: {
           cliente_id: cliente.id, cafe: cafe, cantidad: pCantidad, direccion_envio: direccion,
           descuento: activo, noticia_id: noticia ? noticia.id : null
@@ -824,6 +910,7 @@
             msg.innerHTML = '<div class="note note-ok" role="status" style="margin-top:1rem"><p style="font-weight:700;margin:0">¡Pedido registrado! Te lo preparamos en Cualli.</p>' +
               '<p style="margin-top:0.25rem;color:rgba(255,244,220,0.9)">Tu cuponera lleva ' + cup.sellos + (cup.sellos === 1 ? " café acumulado." : " cafés acumulados.") + '</p></div>';
           }
+          if (!cupAntes.siguienteGratis && cup.siguienteGratis) lanzarCelebracion();
           btn.disabled = false; btn.textContent = "Confirmar pedido directo";
         }).catch(function () {
           var msg = $("pedido-msg");
@@ -865,17 +952,47 @@
           sellosHtml(cup.ciclo) +
           '<p style="margin-top:1.5rem;font-size:1.125rem" role="status">' + esc(estado) + '</p>';
       }
+      function granoSvg(lleno, esGratis) {
+        var relleno = lleno ? (esGratis ? "#c8472b" : "#f2a81d") : "rgba(255,244,220,0.07)";
+        var borde = lleno ? relleno : "rgba(255,244,220,0.6)";
+        var surco = lleno ? "#3b2218" : "rgba(255,244,220,0.6)";
+        return '<svg viewBox="0 0 64 64" width="34" height="34" aria-hidden="true"><g transform="rotate(-18 32 32)"><ellipse cx="32" cy="32" rx="17" ry="22" fill="' + relleno + '" stroke="' + borde + '" stroke-width="2.5"/><path d="M32 13c-5 5.5 5 9.5 0 15-4.5 5.5-2.5 12 0 19" fill="none" stroke="' + surco + '" stroke-width="3.5" stroke-linecap="round"/></g></svg>';
+      }
       function sellosHtml(ciclo) {
         var lis = "";
         for (var i = 0; i < 10; i++) {
           var esGratis = i === 9;
           var lleno = esGratis ? ciclo === 10 : i < ciclo;
+          var ultimo = lleno && (esGratis || i === ciclo - 1);
           var label = esGratis
             ? (lleno ? "Café gratis alcanzado" : "El café después del número 10 es gratis")
             : (lleno ? "Café " + (i + 1) + ", sello ganado" : "Café " + (i + 1) + ", sello pendiente");
-          lis += '<li class="' + (lleno ? "full" : "") + (esGratis ? " free" : "") + '" aria-label="' + label + '">' + (esGratis ? "Gratis" : (i + 1)) + '</li>';
+          lis += '<li class="' + (lleno ? "full" : "") + (esGratis ? " free" : "") + (ultimo ? " nuevo" : "") + '" aria-label="' + label + '">' +
+            granoSvg(lleno, esGratis) + (esGratis ? '<span class="sello-txt">Gratis</span>' : "") + '</li>';
         }
         return '<ol class="stamps" aria-label="Progreso de la cuponera: ' + ciclo + ' de 10 cafés en este ciclo">' + lis + '</ol>';
+      }
+      function lanzarCelebracion() {
+        if (reduceMotion) return;
+        var colores = ["#f2a81d", "#c8472b", "#fff4dc", "#2f6b4f"];
+        var html = "";
+        for (var i = 0; i < 30; i++) {
+          var left = (Math.random() * 100).toFixed(1);
+          var delay = (Math.random() * 0.6).toFixed(2);
+          var dur = (2.4 + Math.random() * 1.4).toFixed(2);
+          var size = Math.round(12 + Math.random() * 12);
+          var color = colores[i % colores.length];
+          var pieza = i % 3 === 0
+            ? '<svg viewBox="0 0 64 64" width="' + size + '" height="' + size + '"><g transform="rotate(-18 32 32)"><ellipse cx="32" cy="32" rx="17" ry="22" fill="' + color + '"/><path d="M32 13c-5 5.5 5 9.5 0 15-4.5 5.5-2.5 12 0 19" fill="none" stroke="#3b2218" stroke-width="3.5" stroke-linecap="round" opacity="0.35"/></g></svg>'
+            : '<span style="display:block;width:' + Math.round(size * 0.7) + 'px;height:' + Math.round(size * 0.45) + 'px;border-radius:60% 40% 55% 45%;background:' + color + '"></span>';
+          html += '<i style="left:' + left + '%;animation-delay:' + delay + 's;animation-duration:' + dur + 's">' + pieza + '</i>';
+        }
+        var cont = document.createElement("div");
+        cont.className = "confeti";
+        cont.setAttribute("aria-hidden", "true");
+        cont.innerHTML = html;
+        document.body.appendChild(cont);
+        setTimeout(function () { cont.remove(); }, 4600);
       }
 
       /* ---------- Cuenta: registro, sesión y perfil ---------- */
