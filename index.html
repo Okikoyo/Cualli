@@ -101,6 +101,7 @@
       .btn-outline { background: none; border: 2px solid var(--cacao); color: var(--cacao); }
       .btn-chile { background: var(--chile); color: #fff; }
       .btn-cafetal { background: var(--cafetal); color: var(--masa); }
+      .btn-sol { background: var(--cempasuchil); color: var(--cacao); }
       .btn-sm { padding: 0.625rem 1.25rem; }
       .label { display: block; font-size: 0.875rem; font-weight: 700; margin-bottom: 0.375rem; }
       .input {
@@ -433,6 +434,10 @@
             </div>
             <p style="font-size:0.875rem;font-weight:500;color:rgba(255,244,220,0.75)">Solo compras directas, no aplica en plataformas.</p>
           </div>
+          <div style="margin-top:1.5rem;display:flex;flex-wrap:wrap;align-items:center;gap:0.75rem 1rem">
+            <button type="button" class="btn btn-sol btn-sm" id="btn-demo-cuponera" aria-controls="cuponera-body">Ver cómo se llena</button>
+            <span id="demo-cuponera-txt" style="font-size:0.95rem;color:rgba(255,244,220,0.85)">Mira en unos segundos cómo caen los sellos hasta llegar al 11.º gratis.</span>
+          </div>
           <div id="cuponera-body"></div>
         </div>
       </section>
@@ -493,6 +498,8 @@
       var cupSellosPrevios = null;   // total de sellos visto en el render anterior de la cuponera
       var cupCaidaPendiente = null;  // { totalAntes } solo cuando un pedido nuevo suma cafés: esos sellos son los que caen
       var cupCaidaObserver = null;   // observa cuándo la cuponera entra en pantalla para soltar el sello
+      var cupDemoActiva = false;     // true mientras corre la demostración “Ver cómo se llena”
+      var cupDemoTimers = [];        // temporizadores de la demostración, para poder cerrarla limpia
 
       function $(id) { return document.getElementById(id); }
       function esc(s) {
@@ -977,6 +984,8 @@
         Array.prototype.forEach.call(pendientes, function (li) { cupCaidaObserver.observe(li); });
       }
       function renderCuponera() {
+        // Durante la demostración no se redibuja: la cuponera real vuelve al terminar.
+        if (cupDemoActiva) return;
         var box = $("cuponera-body");
         if (!cliente) {
           cupSellosPrevios = null;
@@ -1062,6 +1071,87 @@
         cont.innerHTML = html;
         document.body.appendChild(cont);
         setTimeout(function () { cont.remove(); }, 4600);
+      }
+
+      /* ---------- Demostración de la cuponera: “Ver cómo se llena” ---------- */
+      // Solo dibuja sobre #cuponera-body con datos de mentira (paso 0 a 11);
+      // nunca toca misPedidos ni la cuponera real: al terminar, renderCuponera()
+      // vuelve a pintar la cuponera del cliente tal como estaba.
+      function sellosDemoHtml(paso, ultimo) {
+        var lis = "";
+        for (var i = 0; i < 11; i++) {
+          var esGratis = i === 10;
+          var lleno = i < paso;
+          var cae = lleno && i === ultimo;
+          var label = esGratis
+            ? (lleno ? "Café número 11, gratis: ya lo ganaste" : "Café número 11, gratis al juntar 10 cafés")
+            : (lleno ? "Café " + (i + 1) + ", sello ganado" : "Café " + (i + 1) + ", sello pendiente");
+          lis += '<li class="' + (lleno ? "full" : "") + (esGratis ? " free" : "") + (cae ? " cae cayendo" : "") + '"' +
+            (cae ? ' style="--cae-delay:0s"' : "") +
+            ' aria-label="' + label + '">' +
+            granoSvg(lleno, esGratis) + (esGratis ? '<span class="sello-txt">Gratis</span>' : "") + '</li>';
+        }
+        return '<ol class="stamps" aria-label="Demostración de la cuponera: ' + Math.min(paso, 10) + ' de 10 cafés pagados; el número 11 es gratis">' + lis + '</ol>';
+      }
+      function renderDemoCuponera(paso, ultimo) {
+        var box = $("cuponera-body");
+        if (!box) return;
+        var pagados = Math.min(paso, 10);
+        var faltan = Math.max(0, 10 - pagados);
+        var msg, estado;
+        if (paso >= 11) {
+          msg = "¡Tu café número 11 va por nuestra cuenta!";
+          estado = "Y así se completa: 10 cafés pagados y el número 11, gratis. Tu cuponera real sigue como estaba.";
+        } else if (paso === 10) {
+          msg = "¡Ya juntaste tus 10 cafés!";
+          estado = "Solo falta que caiga el sello del número 11, el gratis…";
+        } else if (paso === 0) {
+          msg = "Así empieza tu cuponera: en ceros.";
+          estado = "Con cada café directo que pides, un granito cae y se estampa en su lugar.";
+        } else {
+          msg = "Te " + (faltan === 1 ? "falta " : "faltan ") + faltan + (faltan === 1 ? " café" : " cafés") + " para que el 11.º sea gratis";
+          estado = "Así se vería tu cuponera con " + pagados + " de 10 cafés en este ciclo; el número 11 es gratis.";
+        }
+        box.innerHTML =
+          '<p style="margin-top:1.5rem"><span class="chip chip-sol">Demostración</span></p>' +
+          '<div class="progress" style="margin-top:1rem" role="progressbar" aria-valuemin="0" aria-valuemax="10" aria-valuenow="' + pagados + '" aria-label="Demostración del progreso hacia tu café gratis: ' + pagados + ' de 10 cafés pagados; el número 11 es gratis"><div style="width:' + Math.min(100, pagados / 10 * 100) + '%"></div></div>' +
+          '<p class="progress-msg" role="status">' + esc(msg) + '</p>' +
+          sellosDemoHtml(paso, ultimo) +
+          '<p style="margin-top:1.5rem;font-size:1.125rem" role="status">' + esc(estado) + '</p>';
+      }
+      function terminarDemoCuponera() {
+        cupDemoTimers.forEach(function (t) { clearTimeout(t); });
+        cupDemoTimers = [];
+        cupDemoActiva = false;
+        var btn = $("btn-demo-cuponera");
+        if (btn) { btn.disabled = false; btn.textContent = "Ver cómo se llena"; }
+        var txt = $("demo-cuponera-txt");
+        if (txt) txt.textContent = "Mira en unos segundos cómo caen los sellos hasta llegar al 11.º gratis.";
+        renderCuponera();
+      }
+      function verComoSeLlena() {
+        if (cupDemoActiva) return;
+        cupDemoActiva = true;
+        var btn = $("btn-demo-cuponera");
+        if (btn) { btn.disabled = true; btn.textContent = "Mostrando cómo se llena…"; }
+        var txt = $("demo-cuponera-txt");
+        if (txt) txt.textContent = "Es solo una demostración: tu cuponera real no cambia.";
+        var sec = document.querySelector("#cuponera");
+        if (sec) sec.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
+        renderDemoCuponera(0, -1);
+        var intervalo = reduceMotion ? 240 : 480;
+        for (var s = 1; s <= 11; s++) {
+          (function (paso) {
+            var t = setTimeout(function () {
+              renderDemoCuponera(paso, paso - 1);
+              if (paso === 11) {
+                lanzarCelebracion();
+                cupDemoTimers.push(setTimeout(terminarDemoCuponera, reduceMotion ? 900 : 2100));
+              }
+            }, 350 + paso * intervalo);
+            cupDemoTimers.push(t);
+          })(s);
+        }
       }
 
       /* ---------- Cuenta: registro, sesión y perfil ---------- */
@@ -1564,6 +1654,7 @@
       }
 
       /* ---------- Inicio ---------- */
+      $("btn-demo-cuponera").addEventListener("click", verComoSeLlena);
       renderNav();
       renderTipos();
       renderNoticiaForm();
