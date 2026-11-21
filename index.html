@@ -187,6 +187,43 @@
       .menu-item .md { display: block; font-size: 0.875rem; color: rgba(59,34,24,0.65); font-weight: 400; }
       .menu-item .mp { font-weight: 800; white-space: nowrap; }
 
+      /* Menú “Pide tu café”: distintivo, categorías en píldoras y tarjetas */
+      .menu-badge { display: inline-block; margin-top: 1.25rem; border-radius: 999px; background: var(--cempasuchil); color: var(--cacao); padding: 0.5rem 1.125rem; font-weight: 700; font-size: 0.95rem; }
+      .menu-cats { margin-top: 1.75rem; display: flex; flex-wrap: wrap; gap: 0.75rem; }
+      .cat-pill { border-radius: 999px; border: 2px solid var(--cacao); background: transparent; color: var(--cacao); padding: 0.75rem 1.5rem; font-size: 1.05rem; font-weight: 500; cursor: pointer; font-family: var(--font-body); }
+      .cat-pill[aria-pressed="true"] { background: var(--cacao); color: var(--masa); font-weight: 700; }
+      .menu-grid { margin-top: 1.5rem; display: grid; gap: 1.25rem; }
+      @media (min-width: 640px) { .menu-grid { grid-template-columns: repeat(2, 1fr); } }
+      @media (min-width: 1024px) { .menu-grid { grid-template-columns: repeat(3, 1fr); } }
+      .menu-card { position: relative; display: flex; flex-direction: column; border-radius: 1.5rem; border: 2px solid var(--cacao); background: #fff; padding: 1.5rem; }
+      @media (min-width: 640px) { .menu-card { padding: 1.75rem; } }
+      .menu-card h3 { font-family: var(--font-display); font-size: 1.625rem; font-weight: 800; letter-spacing: -0.01em; margin: 0; }
+      .menu-draw { width: 4.5rem; height: 4.5rem; margin-bottom: 1rem; border-radius: 1rem; background: var(--masa); display: flex; align-items: center; justify-content: center; }
+      .menu-draw svg { width: 3.5rem; height: 3.5rem; display: block; }
+      .menu-card .desc { margin: 0.5rem 0 2rem; font-size: 1.05rem; line-height: 1.55; color: rgba(59,34,24,0.72); }
+      .menu-card .foot { margin-top: auto; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+      .menu-price { font-size: 1.25rem; font-weight: 800; white-space: nowrap; }
+      .btn-agregar { border-radius: 999px; border: none; background: var(--chile); color: #fff; padding: 0.8rem 1.6rem; font-size: 1rem; font-weight: 700; cursor: pointer; font-family: var(--font-body); }
+      .btn-agregar:active { transform: scale(0.97); }
+      .menu-en-pedido { position: absolute; top: 1.25rem; right: 1.25rem; border-radius: 999px; background: rgba(242,168,29,0.4); padding: 0.25rem 0.75rem; font-size: 0.8rem; font-weight: 700; }
+      .cart-bar { margin-top: 1.5rem; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.75rem 1.25rem; border-radius: 1.25rem; background: var(--cacao); color: var(--masa); padding: 1rem 1.25rem; }
+      .cart-bar .cb-txt { font-size: 1.05rem; }
+      .cart-bar .cb-txt strong { color: var(--cempasuchil); }
+      .cart-vaciar { background: none; border: none; color: rgba(255,244,220,0.85); font: inherit; font-size: 0.9rem; font-weight: 700; text-decoration: underline; text-underline-offset: 4px; cursor: pointer; padding: 0.5rem 0; }
+
+      /* Lo agregado desde el menú, dentro del formulario de Pedir */
+      .cart-lines { margin-top: 0.75rem; list-style: none; padding: 0; display: grid; gap: 0.5rem; }
+      .cart-line { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 0.75rem; border: 2px solid rgba(59,34,24,0.25); border-radius: 0.75rem; padding: 0.5rem 0.75rem; }
+      .cart-line .cl-name { font-weight: 700; flex: 1 1 7rem; }
+      .cart-line .cl-name small { display: block; font-weight: 400; color: rgba(59,34,24,0.6); }
+      .qty-sm { gap: 0.5rem; }
+      .qty-sm button { height: 2rem; width: 2rem; font-size: 1rem; }
+      .qty-sm .n { font-size: 1.125rem; min-width: 1.5rem; }
+      .cl-total { font-weight: 800; white-space: nowrap; }
+      .cl-del { background: none; border: none; color: var(--chile); font: inherit; font-size: 0.85rem; font-weight: 700; cursor: pointer; padding: 0.25rem; text-decoration: underline; text-underline-offset: 3px; }
+      .cart-total-row { margin-top: 0.75rem; display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; font-size: 1.05rem; }
+      .cart-total-row strong { font-family: var(--font-display); font-size: 1.25rem; font-weight: 800; }
+
       /* Lista de pedidos */
       .orders { margin-top: 1rem; list-style: none; padding: 0; border-radius: 1.5rem; border: 2px solid rgba(59,34,24,0.15); background: #fff; color: var(--cacao); overflow: hidden; }
       .orders li { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0.5rem; padding: 1rem 1.25rem; }
@@ -447,6 +484,14 @@
         <div id="hoy-body"><p class="mt-6 muted">Cargando lo bueno de hoy…</p></div>
       </section>
 
+      <!-- Menú: Pide tu café -->
+      <section id="menu" class="section" style="padding-top:1rem" aria-label="Menú de Cualli">
+        <h2 class="title">Pide tu café</h2>
+        <p class="lead">Entrega a domicilio en Pachuca de Soto.</p>
+        <span class="menu-badge">Carta y precios</span>
+        <div id="menu-body"><p class="mt-6 muted">Cargando el menú…</p></div>
+      </section>
+
       <!-- Pedir -->
       <section id="pedir" class="section">
         <div class="pedir-panel">
@@ -596,11 +641,27 @@
       var noticiasAll = [];        // muro público (solo apodo o iniciales del autor, nunca su nombre)
       var misNoticias = [];        // noticias propias (consulta autenticada, solo con sesión)
       var misPedidos = [];         // pedidos del cliente en sesión
-      var menuItems = [];          // filas de public.menu activas
+      // Carta incluida en la página: los 9 productos cargados en public.menu
+      // (carta tentativa, marcada “de ejemplo”). La sección se pinta con esta
+      // lista desde el arranque y cargarMenu() la reemplaza por los datos en
+      // vivo de Supabase cuando la lectura responde; si la lectura falla o
+      // viene vacía, la carta local se queda y las tarjetas siempre se ven.
+      var MENU_LOCAL = [
+        { id: "320dd364-5202-45a0-a641-bf339d4876fe", nombre: "Espresso", descripcion: "Corto, intenso y directo.", categoria: "Café caliente", precio: 40 },
+        { id: "016fd005-2a29-450e-a2a1-f132be29e167", nombre: "Americano", descripcion: "Espresso alargado con agua caliente.", categoria: "Café caliente", precio: 45 },
+        { id: "25d0f195-a9a7-4a9a-ac8f-04257d1d763c", nombre: "Capuchino", descripcion: "Espresso con leche vaporizada y espuma.", categoria: "Café caliente", precio: 55 },
+        { id: "6cdceade-6b09-4879-a07b-69d1c143b6ee", nombre: "Latte", descripcion: "Suave, con mucha leche cremosa.", categoria: "Café caliente", precio: 60 },
+        { id: "bc4585cc-41e9-403d-aa33-8f344fb4c041", nombre: "Cold brew", descripcion: "Extracción en frío, ligero y dulce.", categoria: "Café frío", precio: 60 },
+        { id: "102358dc-71d9-48b3-aa06-bf71d2956bf3", nombre: "Latte frío", descripcion: "Espresso con leche fría y hielo.", categoria: "Café frío", precio: 62 },
+        { id: "4a21ec97-87b1-491d-8f6e-03d7651ca705", nombre: "Concha", descripcion: "Pan de dulce clásico.", categoria: "Para acompañar", precio: 25 },
+        { id: "049b91b3-6d55-40bb-8ad9-33ebb4910c77", nombre: "Galleta de avena", descripcion: "Hecha para mojarla en el café.", categoria: "Para acompañar", precio: 28 },
+        { id: "79bb4836-1fec-4956-809e-ea1e56f29e48", nombre: "Oreja", descripcion: "Hojaldre caramelizado.", categoria: "Para acompañar", precio: 30 }
+      ];
+      var menuItems = MENU_LOCAL.slice(); // arranca con la carta local; Supabase la actualiza si responde
       var hayAdmin = true;
       var tipoSel = "buena";
-      var pCantidad = 1;
-      var pCafeSel = "";           // café elegido del menú (si lo hay)
+      var menuCat = "Café caliente"; // categoría visible en la sección “Pide tu café”
+      var carrito = [];              // lo que se suma con “Agregar”: { id, nombre, precio, cantidad }
       var registroOk = "";         // mensaje tras registrarse (confirmar correo)
       var eventoOk = "";           // mensaje tras enviar una solicitud de evento
       var busquedaCajero = "", resultadoCajero = null;
@@ -656,6 +717,11 @@
       function dinero(n) {
         var v = Number(n);
         return "$" + (isFinite(v) ? v.toLocaleString("es-MX", { minimumFractionDigits: v % 1 ? 2 : 0, maximumFractionDigits: 2 }) : esc(n));
+      }
+      // Precio de la carta, siempre con dos decimales: $40.00
+      function dinero2(n) {
+        var v = Number(n);
+        return "$" + (isFinite(v) ? v.toLocaleString("es-MX", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : esc(n));
       }
 
       /* ---------- Cliente de Supabase (REST + Auth) ---------- */
@@ -714,8 +780,13 @@
       }
       function cargarMenu() {
         return sb("menu?select=id,nombre,descripcion,categoria,precio&activo=eq.true&order=creado_en.asc")
-          .then(function (rows) { menuItems = rows || []; renderPedirForm(); })
-          .catch(function () { menuItems = []; });
+          .then(function (rows) {
+            // Solo se reemplaza la carta local si Supabase trae productos;
+            // una respuesta vacía o un error nunca dejan la sección sin menú.
+            if (rows && rows.length) menuItems = rows;
+            renderMenuSeccion(); renderPedirForm();
+          })
+          .catch(function () { renderMenuSeccion(); renderPedirForm(); });
       }
       function cargarHayAdmin() {
         return sb("clientes?select=id&rol=eq.admin&limit=1")
@@ -984,61 +1055,203 @@
         });
       }
 
-      /* ---------- Pedir ---------- */
-      function bloqueMenu() {
-        if (menuItems.length) {
-          var items = menuItems.map(function (m) {
-            var sel = pCafeSel === m.nombre;
-            return '<button type="button" class="menu-item" data-cafe="' + esc(m.nombre) + '" aria-pressed="' + sel + '">' +
-              '<span><span class="mn">' + esc(m.nombre) + '</span>' + (m.descripcion ? '<span class="md">' + esc(m.descripcion) + '</span>' : "") + '</span>' +
-              '<span class="mp">' + dinero(m.precio) + '</span></button>';
-          }).join("");
-          return '<p class="hint" style="margin-top:0.5rem">Elige del menú o escribe otro café abajo.</p><div class="menu-list">' + items + '</div>';
+      /* ---------- Menú “Pide tu café” ---------- */
+      // La carta se lee de public.menu (la misma tabla que usa Pedir) y se
+      // agrupa por su categoría. “Agregar” suma el producto al pedido: el
+      // carrito vive en memoria y el formulario de Pedir lo confirma.
+      var CATS_MENU = ["Café caliente", "Café frío", "Para acompañar"];
+      function categoriasMenu() {
+        var presentes = [];
+        menuItems.forEach(function (m) { if (m.categoria && presentes.indexOf(m.categoria) === -1) presentes.push(m.categoria); });
+        var ordenadas = CATS_MENU.filter(function (c) { return presentes.indexOf(c) !== -1; });
+        presentes.forEach(function (c) { if (ordenadas.indexOf(c) === -1) ordenadas.push(c); });
+        return ordenadas;
+      }
+      function enCarrito(id) {
+        var it = carrito.find(function (x) { return x.id === id; });
+        return it ? it.cantidad : 0;
+      }
+      function carritoTotales() {
+        return carrito.reduce(function (a, x) { return { n: a.n + x.cantidad, total: a.total + x.cantidad * x.precio }; }, { n: 0, total: 0 });
+      }
+      // Dibujitos sencillos (SVG en línea, colores Cualli) solo para las
+      // tarjetas de la sección “Pide tu café”: uno por producto, elegido por
+      // su nombre; si un producto nuevo no tiene dibujo propio, se usa uno
+      // de su categoría.
+      var SVG_ABRE = '<svg viewBox="0 0 64 64" fill="none" stroke="#3B2218" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">';
+      var SVG_CIERRA = "</svg>";
+      var DIBUJOS = {
+        "espresso": SVG_ABRE +
+          '<path d="M20 28h22l-2 13a4 4 0 0 1-4 3h-10a4 4 0 0 1-4-3z" fill="#fff"/>' +
+          '<path d="M22.5 32h17l-.5 3.5h-16z" fill="#3B2218" stroke="none"/>' +
+          '<path d="M42 31c5.5.5 5.5 8 0 8.5"/>' +
+          '<path d="M14 50h34"/>' + SVG_CIERRA,
+        "americano": SVG_ABRE +
+          '<path d="M27 5c-2.5 3.5-2.5 6.5 0 10" stroke="#F2A81D"/>' +
+          '<path d="M37 5c-2.5 3.5-2.5 6.5 0 10" stroke="#F2A81D"/>' +
+          '<path d="M17 24h29v13a9 9 0 0 1-9 9H26a9 9 0 0 1-9-9z" fill="#fff"/>' +
+          '<path d="M20 29h23v3.5H20z" fill="#3B2218" stroke="none"/>' +
+          '<path d="M46 28c6 1 6 11 0 12"/>' + SVG_CIERRA,
+        "capuchino": SVG_ABRE +
+          '<path d="M20 26a12 10 0 0 1 24 0z" fill="#FFF4DC"/>' +
+          '<circle cx="27" cy="21" r="1.6" fill="#F2A81D" stroke="none"/>' +
+          '<circle cx="36" cy="18.5" r="1.3" fill="#C8472B" stroke="none"/>' +
+          '<circle cx="33" cy="22.5" r="1.2" fill="#F2A81D" stroke="none"/>' +
+          '<path d="M18 26h28l-2 12a6 6 0 0 1-6 5H26a6 6 0 0 1-6-5z" fill="#fff"/>' +
+          '<path d="M46 29c5 0 5 8 0 9"/>' +
+          '<path d="M14 50h36"/>' + SVG_CIERRA,
+        "latte": SVG_ABRE +
+          '<path d="M22 10h20l-2 42a4 4 0 0 1-4 3.6h-8A4 4 0 0 1 24 52z" fill="#fff"/>' +
+          '<path d="M24.5 42h15l-.7 9.3a2.6 2.6 0 0 1-2.6 2.4h-8.4a2.6 2.6 0 0 1-2.6-2.4z" fill="#3B2218" fill-opacity="0.88" stroke="none"/>' +
+          '<path d="M32 24.6c-2-3.4-6.5-3-6.5.9 0 2.6 3 4.4 6.5 6.7 3.5-2.3 6.5-4.1 6.5-6.7 0-3.9-4.5-4.3-6.5-.9z" fill="#C8472B" stroke="none"/>' + SVG_CIERRA,
+        "cold brew": SVG_ABRE +
+          '<path d="M22 12h20l-2 40a4 4 0 0 1-4 3.6h-8A4 4 0 0 1 24 52z" fill="#3B2218"/>' +
+          '<path d="M23.5 18h17" stroke="#FFF4DC" stroke-width="2" opacity="0.55"/>' +
+          '<rect x="25.5" y="23" width="9" height="9" rx="2" transform="rotate(-12 30 27.5)" fill="#FFF4DC" stroke="none"/>' +
+          '<rect x="31" y="34" width="8" height="8" rx="2" transform="rotate(14 35 38)" fill="#FFF4DC" stroke="none" opacity="0.85"/>' + SVG_CIERRA,
+        "latte frio": SVG_ABRE +
+          '<path d="M22 10h20l-2 42a4 4 0 0 1-4 3.6h-8A4 4 0 0 1 24 52z" fill="#fff"/>' +
+          '<path d="M24.8 44h14.4l-.6 7.3a2.6 2.6 0 0 1-2.6 2.4h-8a2.6 2.6 0 0 1-2.6-2.4z" fill="#3B2218" fill-opacity="0.9" stroke="none"/>' +
+          '<path d="M42 4L35.5 24" stroke="#C8472B" stroke-width="4.5"/>' +
+          '<rect x="25.5" y="19" width="8.5" height="8.5" rx="2" transform="rotate(-10 29.7 23.2)" fill="#FFF4DC" stroke-width="2"/>' +
+          '<rect x="31.5" y="29" width="8" height="8" rx="2" transform="rotate(12 35.5 33)" fill="#FFF4DC" stroke-width="2"/>' + SVG_CIERRA,
+        "concha": SVG_ABRE +
+          '<path d="M14 42a18 15 0 0 1 36 0z" fill="#fff"/>' +
+          '<g stroke-width="2.2"><path d="M32 29v12"/><path d="M23.5 31.5c2.5 3.2 2.5 6.8 0 10"/><path d="M40.5 31.5c-2.5 3.2-2.5 6.8 0 10"/><path d="M17.5 37.5c9.5-3 19.5-3 29 0"/></g>' +
+          '<rect x="13" y="42" width="38" height="6" rx="3" fill="#F2A81D"/>' + SVG_CIERRA,
+        "galleta de avena": SVG_ABRE +
+          '<circle cx="32" cy="33" r="17" fill="#F2A81D" fill-opacity="0.45"/>' +
+          '<circle cx="26" cy="28" r="1.8" fill="#3B2218" stroke="none"/>' +
+          '<circle cx="36" cy="26" r="1.5" fill="#3B2218" stroke="none"/>' +
+          '<circle cx="31" cy="36" r="1.8" fill="#3B2218" stroke="none"/>' +
+          '<circle cx="39" cy="34" r="1.4" fill="#3B2218" stroke="none"/>' +
+          '<circle cx="25" cy="37" r="1.4" fill="#3B2218" stroke="none"/>' +
+          '<circle cx="34" cy="30.5" r="1.5" fill="#C8472B" stroke="none"/>' + SVG_CIERRA,
+        "oreja": SVG_ABRE +
+          '<path d="M32 54C16 41 14 24 23 19c4.5-2.4 9 .2 9 5.5 0-5.3 4.5-7.9 9-5.5 9 5 7 22-9 35z" fill="#F2A81D" fill-opacity="0.55"/>' +
+          '<g stroke-width="2.2"><path d="M25.5 25.5c-3.2 1.2-4 5.2-.8 7.8"/><path d="M38.5 25.5c3.2 1.2 4 5.2.8 7.8"/><path d="M32 26v22" opacity="0.55"/></g>' +
+          '<circle cx="32" cy="38" r="1.6" fill="#C8472B" stroke="none"/>' + SVG_CIERRA
+      };
+      function dibujoMenu(m) {
+        var clave = String(m.nombre || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        if (DIBUJOS[clave]) return DIBUJOS[clave];
+        if (m.categoria === "Café frío") return DIBUJOS["cold brew"];
+        if (m.categoria === "Para acompañar") return DIBUJOS["galleta de avena"];
+        return DIBUJOS.americano;
+      }
+      function renderMenuSeccion() {
+        var box = $("menu-body");
+        if (!box) return;
+        if (!menuItems.length) {
+          box.innerHTML = '<p class="note" style="margin-top:1.5rem;background:rgba(242,168,29,0.25)">El menú está en camino: muy pronto verás aquí la carta con precios.</p>';
+          return;
         }
-        return '<p class="note" style="margin-top:0.5rem;background:rgba(242,168,29,0.25);font-size:0.875rem">Menú en camino: muy pronto verás aquí el menú con precios. Por ahora escribe qué café quieres, como siempre.</p>';
+        var cats = categoriasMenu();
+        if (cats.indexOf(menuCat) === -1) menuCat = cats[0];
+        var pills = cats.map(function (c) {
+          return '<button type="button" class="cat-pill" data-cat="' + esc(c) + '" aria-pressed="' + (c === menuCat) + '">' + esc(c) + '</button>';
+        }).join("");
+        var cards = menuItems.filter(function (m) { return m.categoria === menuCat; }).map(function (m) {
+          var n = enCarrito(m.id);
+          return '<article class="menu-card">' +
+            (n ? '<span class="menu-en-pedido" role="status">' + n + ' en tu pedido</span>' : "") +
+            '<div class="menu-draw" aria-hidden="true">' + dibujoMenu(m) + '</div>' +
+            '<h3' + (n ? ' style="padding-right:6.5rem"' : "") + '>' + esc(m.nombre) + '</h3>' +
+            '<p class="desc">' + esc(m.descripcion || "") + '</p>' +
+            '<div class="foot"><span class="menu-price">' + dinero2(m.precio) + '</span>' +
+            '<button type="button" class="btn-agregar" data-agregar="' + esc(m.id) + '" aria-label="Agregar ' + esc(m.nombre) + ' a tu pedido">Agregar</button></div></article>';
+        }).join("");
+        var t = carritoTotales();
+        var bar = t.n
+          ? '<div class="cart-bar" role="status"><span class="cb-txt">Tu pedido lleva <strong>' + t.n + (t.n === 1 ? " producto" : " productos") + '</strong> · Total <strong>' + dinero2(t.total) + '</strong></span>' +
+            '<span style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap"><button type="button" class="cart-vaciar" id="cart-vaciar">Vaciar</button>' +
+            '<a href="#pedir" class="btn btn-sol btn-sm">Confirmar en Pedir ↓</a></span></div>' : "";
+        box.innerHTML = '<div class="menu-cats" role="group" aria-label="Categorías del menú">' + pills + '</div>' +
+          '<div class="menu-grid">' + cards + '</div>' + bar;
+        Array.prototype.forEach.call(box.querySelectorAll("[data-cat]"), function (b) {
+          b.addEventListener("click", function () { menuCat = b.getAttribute("data-cat"); renderMenuSeccion(); });
+        });
+        Array.prototype.forEach.call(box.querySelectorAll("[data-agregar]"), function (b) {
+          b.addEventListener("click", function () { agregarAlCarrito(b.getAttribute("data-agregar")); });
+        });
+        var vaciar = $("cart-vaciar");
+        if (vaciar) vaciar.addEventListener("click", function () { carrito = []; renderMenuSeccion(); renderPedirForm(); });
       }
-      function bloqueCantidad(idSufijo) {
-        return '<div class="field"><span class="label" id="lbl-cantidad' + idSufijo + '">¿Cuántos cafés?</span>' +
-          '<div class="qty" role="group" aria-labelledby="lbl-cantidad' + idSufijo + '">' +
-          '<button type="button" aria-label="Quitar un café" data-qty="-1">−</button>' +
-          '<span class="n" aria-live="polite" id="qty-n' + idSufijo + '">' + pCantidad + '</span>' +
-          '<button type="button" aria-label="Agregar un café" data-qty="1">+</button></div></div>';
+      function agregarAlCarrito(id) {
+        var m = menuItems.find(function (x) { return String(x.id) === String(id); });
+        if (!m) return;
+        var it = carrito.find(function (x) { return x.id === m.id; });
+        if (it) it.cantidad = Math.min(50, it.cantidad + 1);
+        else carrito.push({ id: m.id, nombre: m.nombre, precio: Number(m.precio) || 0, cantidad: 1 });
+        renderMenuSeccion();
+        renderPedirForm();
       }
-      function enlazarCantidad(idSufijo) {
-        Array.prototype.forEach.call(document.querySelectorAll("[data-qty]"), function (b) {
+      // El paso 1 de Pedir cuando el pedido viene del menú: renglones con
+      // cantidad ajustable y el total. El descuento de la buena noticia y la
+      // cuponera se calculan igual que siempre, sobre todo el pedido.
+      function bloqueCarrito() {
+        var t = carritoTotales();
+        var lines = carrito.map(function (x) {
+          return '<li class="cart-line"><span class="cl-name">' + esc(x.nombre) + '<small>' + dinero2(x.precio) + ' c/u</small></span>' +
+            '<span class="qty qty-sm" role="group" aria-label="Cantidad de ' + esc(x.nombre) + '">' +
+            '<button type="button" aria-label="Quitar uno de ' + esc(x.nombre) + '" data-cart-dec="' + esc(x.id) + '">−</button>' +
+            '<span class="n" aria-live="polite">' + x.cantidad + '</span>' +
+            '<button type="button" aria-label="Agregar uno más de ' + esc(x.nombre) + '" data-cart-inc="' + esc(x.id) + '">+</button></span>' +
+            '<span class="cl-total">' + dinero2(x.precio * x.cantidad) + '</span>' +
+            '<button type="button" class="cl-del" data-cart-del="' + esc(x.id) + '">Quitar</button></li>';
+        }).join("");
+        return '<p class="hint" style="margin-top:0.5rem">Esto es lo que agregaste desde el menú. Ajusta las cantidades aquí o <a href="#menu" class="link-cafetal">sigue eligiendo en “Pide tu café”</a>.</p>' +
+          '<ul class="cart-lines">' + lines + '</ul>' +
+          '<div class="cart-total-row"><span>Total de tu pedido</span><strong>' + dinero2(t.total) + '</strong></div>';
+      }
+      // El paso 1 de Pedir cuando todavía no se agrega nada desde el menú:
+      // un mensaje corto que invita a elegir en “Pide tu café”, sin listar
+      // toda la carta aquí.
+      function bloquePedidoVacio() {
+        return '<p class="note note-soft" role="status" style="margin-top:0.75rem">Todavía no agregas nada a tu pedido. Elige tu café en <a href="#menu" class="link-cafetal">“Pide tu café”</a> y toca <strong>Agregar</strong>.</p>';
+      }
+      function enlazarCarrito() {
+        function buscar(id) { return carrito.find(function (x) { return String(x.id) === String(id); }); }
+        Array.prototype.forEach.call(document.querySelectorAll("[data-cart-inc]"), function (b) {
           b.addEventListener("click", function () {
-            pCantidad = Math.min(50, Math.max(1, pCantidad + Number(b.getAttribute("data-qty"))));
-            var n = $("qty-n" + idSufijo); if (n) n.textContent = pCantidad;
+            var it = buscar(b.getAttribute("data-cart-inc"));
+            if (it) it.cantidad = Math.min(50, it.cantidad + 1);
+            renderMenuSeccion(); renderPedirForm();
           });
         });
-        Array.prototype.forEach.call(document.querySelectorAll("[data-cafe]"), function (b) {
+        Array.prototype.forEach.call(document.querySelectorAll("[data-cart-dec]"), function (b) {
           b.addEventListener("click", function () {
-            pCafeSel = b.getAttribute("data-cafe");
-            var input = $("p-cafe") || $("p-cafe-invitado");
-            if (input) input.value = pCafeSel;
-            Array.prototype.forEach.call(document.querySelectorAll("[data-cafe]"), function (x) {
-              x.setAttribute("aria-pressed", x.getAttribute("data-cafe") === pCafeSel ? "true" : "false");
-            });
+            var it = buscar(b.getAttribute("data-cart-dec"));
+            if (!it) return;
+            it.cantidad -= 1;
+            if (it.cantidad <= 0) carrito = carrito.filter(function (x) { return x !== it; });
+            renderMenuSeccion(); renderPedirForm();
+          });
+        });
+        Array.prototype.forEach.call(document.querySelectorAll("[data-cart-del]"), function (b) {
+          b.addEventListener("click", function () {
+            carrito = carrito.filter(function (x) { return String(x.id) !== String(b.getAttribute("data-cart-del")); });
+            renderMenuSeccion(); renderPedirForm();
           });
         });
       }
+
+      /* ---------- Pedir ---------- */
       function renderPedirForm() {
         var box = $("pedir-form");
         if (!box) return;
         if (!cliente) {
+          var paso1Invitado = carrito.length
+            ? bloqueCarrito()
+            : bloquePedidoVacio();
           box.innerHTML = '<div class="form-card"><h3>Empieza tu pedido</h3>' +
-            '<p class="step-head">Paso 1 · Elige tu café</p>' + bloqueMenu() +
-            '<div class="field"><label class="label" for="p-cafe-invitado">¿Qué café quieres?</label>' +
-            '<input id="p-cafe-invitado" class="input" placeholder="Ej. Café de olla para preparar en casa" value="' + esc(pCafeSel) + '" /></div>' +
-            bloqueCantidad("-invitado") +
+            '<p class="step-head">Paso 1 · Elige tu café</p>' + paso1Invitado +
             '<p class="step-head">Paso 2 · Tu buena noticia de hoy</p>' +
             '<p style="margin-top:0.5rem;line-height:1.6;color:rgba(59,34,24,0.75)">Elige tu tipo en las tarjetas de aquí abajo: 5%, 7% o 10%.</p>' +
             '<p class="step-head">Paso 3 · Confirma con tu cuenta</p>' +
-            '<p style="margin-top:0.5rem;line-height:1.6;color:rgba(59,34,24,0.75)">Lo que escribiste en el paso 1 se queda aquí mismo.</p>' +
+            '<p style="margin-top:0.5rem;line-height:1.6;color:rgba(59,34,24,0.75)">Lo que elegiste en el paso 1 se queda aquí mismo.</p>' +
             '<a href="#cuenta" class="btn btn-cacao" style="margin-top:1.25rem">Crear mi cuenta o iniciar sesión para confirmar</a></div>';
-          var inv = $("p-cafe-invitado");
-          inv.addEventListener("input", function () { pCafeSel = inv.value; });
-          enlazarCantidad("-invitado");
+          if (carrito.length) enlazarCarrito();
           return;
         }
         var activo = descuentoActivoHoy();
@@ -1048,15 +1261,14 @@
           : hoy
             ? '<p class="note note-soft" role="status" style="margin-top:1rem">Este pedido va sin descuento: el de tu buena noticia de hoy ya se aplicó a tu primer pedido del día.</p>'
             : '<p class="note note-soft" role="status" style="margin-top:1rem">Hoy aún no compartes tu buena noticia: este pedido va sin descuento. <a href="#noticias" class="link-cafetal">Compártela antes de pedir</a></p>';
+        var paso1 = carrito.length
+          ? bloqueCarrito()
+          : bloquePedidoVacio();
         box.innerHTML = '<form class="form-card" id="form-pedido"><h3>Tu pedido directo</h3>' +
           '<p style="margin-top:0.5rem;color:rgba(59,34,24,0.75)">Pedido a nombre de <strong>' + esc(cliente.nombre) + '</strong>' +
           (cliente.telefono ? ' · ' + esc(cliente.telefono) : '') +
           '. <a href="#cuenta" class="link-cafetal">Cambiar mis datos</a></p>' +
-          '<p class="step-head">Paso 1 · Elige tu café</p>' + bloqueMenu() +
-          '<div class="field"><label class="label" for="p-cafe">¿Qué café quieres?</label>' +
-          '<input id="p-cafe" class="input" placeholder="Ej. Café de olla para preparar en casa" value="' + esc(pCafeSel) + '" />' +
-          '<p class="err hidden" id="err-p-cafe" role="alert"></p></div>' +
-          bloqueCantidad("") +
+          '<p class="step-head">Paso 1 · Elige tu café</p>' + paso1 +
           '<p class="step-head">Pasos 2 y 3 · Tu noticia y la confirmación</p>' +
           '<div class="field"><label class="label" for="p-direccion">Dirección de envío para este pedido</label>' +
           '<textarea id="p-direccion" class="input" rows="2">' + esc(cliente.direccion_envio || "") + '</textarea>' +
@@ -1064,18 +1276,32 @@
           '<p class="hint">Es la dirección guardada en tu cuenta; si la cambias aquí, queda guardada para tu siguiente pedido.</p></div>' +
           avisoDesc + '<div id="pedido-msg"></div>' +
           '<button type="submit" class="btn btn-cacao" style="margin-top:1.5rem" id="btn-pedido">Confirmar pedido directo</button></form>';
-        var inp = $("p-cafe");
-        inp.addEventListener("input", function () { pCafeSel = inp.value; });
-        enlazarCantidad("");
+        if (carrito.length) enlazarCarrito();
         $("form-pedido").addEventListener("submit", onPedir);
       }
       function onPedir(ev) {
         ev.preventDefault();
-        var cafe = ($("p-cafe").value || "").trim();
+        // El pedido se arma solo con lo agregado desde el menú “Pide tu
+        // café”: el café del pedido es el detalle del carrito y la cantidad
+        // es el total de productos. Sin nada agregado, no hay pedido que
+        // confirmar y se invita a elegir del menú.
+        var usaCarrito = carrito.length > 0;
+        var cafe, cantidadPedido;
+        if (usaCarrito) {
+          cafe = carrito.map(function (x) { return x.cantidad + " × " + x.nombre; }).join(", ");
+          cantidadPedido = carritoTotales().n;
+        } else {
+          cafe = "";
+          cantidadPedido = 0;
+        }
         var direccion = ($("p-direccion").value || "").trim();
         var ok = true;
-        var eC = $("err-p-cafe"), eD = $("err-p-direccion");
-        if (!cafe) { eC.textContent = "Dinos qué café quieres."; eC.classList.remove("hidden"); ok = false; } else eC.classList.add("hidden");
+        var eD = $("err-p-direccion");
+        if (!usaCarrito) {
+          var msgVacio = $("pedido-msg");
+          if (msgVacio) msgVacio.innerHTML = '<p class="note note-err" role="alert" style="margin-top:1rem">Todavía no agregas nada a tu pedido. Elige tu café en <a href="#menu" class="link-cafetal">“Pide tu café”</a> y toca Agregar.</p>';
+          ok = false;
+        }
         if (!direccion) { eD.textContent = "Necesitamos la dirección de envío para este pedido."; eD.classList.remove("hidden"); ok = false; } else eD.classList.add("hidden");
         if (!ok) return;
         var btn = $("btn-pedido");
@@ -1084,9 +1310,10 @@
         var noticia = activo > 0 ? miNoticiaDeHoy() : null;
         var cupAntes = miCuponera();
         sb("pedidos", { method: "POST", prefer: "return=representation", body: {
-          cliente_id: cliente.id, cafe: cafe, cantidad: pCantidad, direccion_envio: direccion,
+          cliente_id: cliente.id, cafe: cafe, cantidad: cantidadPedido, direccion_envio: direccion,
           descuento: activo, noticia_id: noticia ? noticia.id : null
         } }).then(function () {
+          if (usaCarrito) { carrito = []; renderMenuSeccion(); }
           if (direccion !== (cliente.direccion_envio || "")) {
             return sb("clientes?id=eq." + cliente.id, { method: "PATCH", body: { direccion_envio: direccion } })
               .then(function () { cliente.direccion_envio = direccion; });
@@ -1584,8 +1811,8 @@
       }
       function cerrarSesion() {
         authApi("logout", null, "POST").catch(function () {});
-        accessToken = ""; cliente = null; misPedidos = []; misNoticias = []; resultadoCajero = null; busquedaCajero = ""; cupCaidaPendiente = null; cupSellosPrevios = null;
-        renderNav(); renderCuenta(); renderNoticiaForm(); renderPedirForm(); renderMisPedidos(); renderCuponera(); renderPaneles(); renderEventoForm();
+        accessToken = ""; cliente = null; misPedidos = []; misNoticias = []; resultadoCajero = null; busquedaCajero = ""; cupCaidaPendiente = null; cupSellosPrevios = null; carrito = [];
+        renderNav(); renderCuenta(); renderNoticiaForm(); renderPedirForm(); renderMisPedidos(); renderCuponera(); renderPaneles(); renderEventoForm(); renderMenuSeccion();
       }
 
       function renderPerfil(box) {
@@ -1976,6 +2203,7 @@
       if (window.location.hash === "#evento") mostrarVista("eventos", true);
       renderTipos();
       renderNoticiaForm();
+      renderMenuSeccion();
       renderPedirForm();
       renderCuponera();
       renderCuenta();
