@@ -94,7 +94,7 @@
       .pill-panel { background: var(--cafetal); color: var(--masa) !important; border-radius: 999px; padding: 0.5rem 1rem !important; font-weight: 700; text-decoration: none; }
       .burger { display: flex; height: 2.5rem; width: 2.5rem; align-items: center; justify-content: center; border-radius: 999px; border: 2px solid var(--cacao); background: none; font-size: 1.25rem; font-weight: 700; color: var(--cacao); cursor: pointer; }
 
-      /* Vista activa (Principal / Eventos) marcada en el menú principal */
+      /* Vista activa (Principal / Eventos / Mi cuenta) marcada en el menú principal */
       a.tab-link-on { text-decoration: underline !important; text-decoration-color: var(--cempasuchil); text-decoration-thickness: 3px; text-underline-offset: 6px; font-weight: 700; }
 
       /* Botones y formularios */
@@ -419,6 +419,27 @@
       select.input { appearance: auto; }
       .toggle-btn { border-radius: 999px; border: 2px solid var(--cacao); background: #fff; padding: 0.4rem 1rem; font-weight: 700; cursor: pointer; font-family: var(--font-body); color: var(--cacao); }
       .toggle-btn.on { background: var(--cafetal); border-color: var(--cafetal); color: var(--masa); }
+      .rot-opts { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.25rem; }
+      .rot-opts .toggle-btn { min-width: 5.5rem; padding: 0.6rem 1.25rem; font-size: 1rem; }
+      /* Frases sugeridas para el mensaje de un regalo */
+      .frases { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem; }
+      .frase-chip { border-radius: 999px; border: 2px solid rgba(59,34,24,0.3); background: #fff; padding: 0.35rem 0.875rem; font-family: var(--font-body); font-size: 0.9rem; font-weight: 600; color: var(--cacao); cursor: pointer; }
+      .frase-chip:hover { border-color: var(--cacao); }
+      .frase-chip.on { background: var(--cafetal); border-color: var(--cafetal); color: var(--masa); }
+      /* Modo de entrega en el pedido: 3 opciones elegibles */
+      .entrega-opts { display: grid; gap: 0.5rem; margin-top: 0.25rem; }
+      .entrega-opt { display: flex; align-items: center; gap: 0.625rem; width: 100%; text-align: left; border: 2px solid rgba(59,34,24,0.25); background: #fff; border-radius: 0.75rem; padding: 0.75rem 1rem; cursor: pointer; font-family: var(--font-body); font-size: 1rem; font-weight: 700; color: var(--cacao); }
+      .entrega-opt[aria-checked="true"] { border-color: var(--cacao); background: rgba(242,168,29,0.25); }
+      .entrega-opt .dot { flex-shrink: 0; height: 1.125rem; width: 1.125rem; border-radius: 999px; border: 2px solid var(--cacao); }
+      .entrega-opt[aria-checked="true"] .dot { background: var(--cacao); box-shadow: inset 0 0 0 3px #fff; }
+      .entrega-detalle { margin-top: 0.75rem; }
+      .check-row { margin-top: 0.75rem; display: flex; align-items: flex-start; gap: 0.625rem; font-weight: 500; line-height: 1.45; cursor: pointer; }
+      .check-row input { margin-top: 0.15rem; height: 1.125rem; width: 1.125rem; flex-shrink: 0; accent-color: var(--cafetal); }
+      .logo-preview { margin-top: 0.75rem; }
+      .logo-preview img { max-width: 10rem; max-height: 7rem; object-fit: contain; background: #fff; border: 2px solid rgba(59,34,24,0.2); border-radius: 0.75rem; padding: 0.375rem; display: block; }
+      .logo-thumb { margin-top: 0.5rem; }
+      .logo-thumb img { width: 6.5rem; height: 6.5rem; object-fit: contain; background: #fff; border: 2px solid rgba(59,34,24,0.15); border-radius: 0.75rem; padding: 0.375rem; display: block; }
+      .logo-thumb a.meta-link { font-size: 0.875rem; font-weight: 700; color: var(--cafetal); text-decoration: underline; text-underline-offset: 3px; }
 
       footer.site { background: var(--cacao); color: var(--masa); }
       .footer-in { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem; padding-top: 2rem; padding-bottom: 2rem; }
@@ -511,6 +532,13 @@
         </div>
       </section>
 
+      <!-- Regalar un café (solo con sesión) -->
+      <section id="regalar" class="section hidden" style="padding-top:0" aria-label="Regalar un café">
+        <h2 class="title">Regalar un café</h2>
+        <p class="lead">No tienes que esperar a juntar sellos: regala un café cuando quieras, a quien quieras.</p>
+        <div id="regalar-body" style="margin-top:1.5rem;max-width:44rem"></div>
+      </section>
+
       <!-- Buenas noticias -->
       <section id="noticias" class="section" style="padding-top:0">
         <h2 class="title">Una buena noticia vale un descuento</h2>
@@ -530,13 +558,6 @@
             <p>Detrás de cada grano hay manos que lo cosecharon y una historia que merece contarse.</p>
           </div>
         </div>
-      </section>
-
-      <!-- Tu cuenta -->
-      <section id="cuenta" class="section" style="padding-top:0">
-        <h2 class="title">Tu cuenta Cualli</h2>
-        <p class="lead">Tu dirección queda guardada para tu siguiente pedido.</p>
-        <div id="cuenta-body"><p class="mt-6 muted">Cargando tu cuenta…</p></div>
       </section>
 
       <!-- Cuponera -->
@@ -559,13 +580,6 @@
         </div>
       </section>
 
-      <!-- Paneles del equipo -->
-      <section id="admin" class="section hidden" style="padding-top:0" aria-label="Panel de dueño">
-        <div class="panel-box" id="admin-body"></div>
-      </section>
-      <section id="equipo" class="section hidden" style="padding-top:0" aria-label="Panel del equipo">
-        <div class="panel-box" id="equipo-body"></div>
-      </section>
       </div><!-- /vista-principal -->
 
       <div id="vista-eventos" class="hidden">
@@ -597,6 +611,23 @@
         </div>
       </section>
       </div><!-- /vista-eventos -->
+
+      <div id="vista-cuenta" class="hidden">
+      <!-- Tu cuenta -->
+      <section id="cuenta" class="section" style="padding-top:0">
+        <h2 class="title">Tu cuenta Cualli</h2>
+        <p class="lead">Tu dirección queda guardada para tu siguiente pedido.</p>
+        <div id="cuenta-body"><p class="mt-6 muted">Cargando tu cuenta…</p></div>
+      </section>
+
+      <!-- Paneles del equipo -->
+      <section id="admin" class="section hidden" style="padding-top:0" aria-label="Panel de dueño">
+        <div class="panel-box" id="admin-body"></div>
+      </section>
+      <section id="equipo" class="section hidden" style="padding-top:0" aria-label="Panel del equipo">
+        <div class="panel-box" id="equipo-body"></div>
+      </section>
+      </div><!-- /vista-cuenta -->
     </main>
 
     <footer class="site">
@@ -635,6 +666,19 @@
         { id: "nueva", label: "Nueva" }, { id: "contactada", label: "Contactada" },
         { id: "confirmada", label: "Confirmada" }, { id: "cancelada", label: "Cancelada" }
       ];
+      // Modos de entrega del pedido: se guardan en pedidos.modo_entrega.
+      var MODOS_ENTREGA = [
+        { id: "guardada", label: "Enviar a mi dirección guardada" },
+        { id: "otra", label: "Enviar a otra dirección" },
+        { id: "recolecto", label: "Recolecto en cafetería" }
+      ];
+      // Parentesco de quien recibe un regalo con quien lo obsequia:
+      // se guarda en pedidos.regalo_relacion.
+      var RELACIONES = ["mamá", "papá", "hermano/a", "pareja", "amigo/a", "abuelo/a", "hijo/a", "otro"];
+      // Frases sugeridas para el mensaje del regalo: se leen de la tabla
+      // mensajes_regalo de Supabase (cargarMensajesRegalo). Esta lista solo
+      // se usa mientras la tabla responde o si la lectura falla.
+      var FRASES_REGALO_DEFECTO = ["Te lo mereces.", "Gracias por todo.", "Un cafecito para alegrarte el día."];
 
       var accessToken = "";
       var cliente = null;          // fila de public.clientes de la sesión
@@ -664,6 +708,31 @@
       var carrito = [];              // lo que se suma con “Agregar”: { id, nombre, precio, cantidad }
       var registroOk = "";         // mensaje tras registrarse (confirmar correo)
       var eventoOk = "";           // mensaje tras enviar una solicitud de evento
+      var eventoRotulados = null;  // null = sin responder, true = sí, false = no (vasos rotulados en Eventos)
+      var pedidoModo = "guardada"; // modo de entrega elegido en el pedido: guardada | otra | recolecto
+      var pedidoOtraDireccion = ""; // dirección escrita en “Enviar a otra dirección” (se conserva entre renders)
+      var pedidoGuardarNueva = false; // cuadrito “Guardar esta dirección para mis próximos pedidos”
+      // Canje del café gratis (el 11.º): para el cliente o de regalo.
+      // Se guardan en pedidos.es_regalo, pedidos.regalo_para,
+      // pedidos.regalo_relacion y pedidos.regalo_mensaje.
+      var regaloEsRegalo = false;    // false = “Es para mí”, true = “Se lo regalo a alguien”
+      var regaloParaTxt = "";        // nombre de la persona que recibe el regalo
+      var regaloRelacionTxt = "";    // parentesco de esa persona con quien obsequia
+      var regaloMensajeTxt = "";     // palabras para esa persona (sugeridas o propias)
+      var regaloModoEntrega = "envio"; // cómo lo recibe esa persona: envio | recolecto
+      var regaloDireccionTxt = "";   // dirección de esa persona, solo si es envío
+      var frasesRegalo = FRASES_REGALO_DEFECTO.slice(); // sugerencias vigentes (tabla mensajes_regalo)
+      // “Regalar un café” en cualquier momento (solo con sesión): un pedido
+      // normal, pagado, marcado como regalo. No toca la cuponera ni el
+      // canje del café gratis del 11.º.
+      var rgCafeId = "";             // café elegido del menú para regalar
+      var rgCantidad = 1;            // cuántos cafés se regalan
+      var rgParaTxt = "";            // nombre de la persona que recibe
+      var rgRelacionTxt = "";        // parentesco con quien obsequia
+      var rgMensajeTxt = "";         // palabras para esa persona
+      var rgModoEntrega = "envio";   // cómo lo recibe: envio | recolecto
+      var rgDireccionTxt = "";       // su dirección, solo si es envío
+      var rgOk = "";                 // mensaje de confirmación tras regalar
       var busquedaCajero = "", resultadoCajero = null;
       var cupSellosPrevios = null;   // total de sellos visto en el render anterior de la cuponera
       var cupCaidaPendiente = null;  // { totalAntes } solo cuando un pedido nuevo suma cafés: esos sellos son los que caen
@@ -680,6 +749,77 @@
       function tipoLabel(tipo) { var t = TIPOS.find(function (x) { return x.id === tipo; }); return t ? t.titulo : "Buena noticia"; }
       function tipoPct(tipo) { var t = TIPOS.find(function (x) { return x.id === tipo; }); return t ? t.pct : 0; }
       function estadoLabel(e) { var x = ESTADOS.find(function (y) { return y.id === e; }); return x ? x.label : e; }
+      function modoEntregaLabel(m) { var x = MODOS_ENTREGA.find(function (y) { return y.id === m; }); return x ? x.label : m; }
+      // Cómo se muestra la entrega de un pedido en los paneles del equipo.
+      // conDireccion=false (barista) nunca muestra la dirección, como hasta ahora.
+      function entregaTexto(p, conDireccion) {
+        var dir = (p.direccion_envio || "").trim();
+        if (p.es_regalo) {
+          var para = (p.regalo_para || "").trim();
+          if (p.modo_entrega === "recolecto") return "Regalo: pasa por él a la cafetería" + (para ? " a nombre de " + para : "");
+          if (p.modo_entrega === "otra") return "Regalo: envío a su dirección" + (para ? " (" + para + ")" : "") + (conDireccion && dir ? ": " + dir : "");
+          return "Regalo" + (para ? " para " + para : "") + (conDireccion && dir ? ": " + dir : "");
+        }
+        if (p.modo_entrega === "recolecto") return "Recolecto en cafetería";
+        if (p.modo_entrega === "otra") return "Envío a otra dirección" + (conDireccion && dir ? ": " + dir : "");
+        if (p.modo_entrega === "guardada") return "Envío a su dirección guardada" + (conDireccion && dir ? ": " + dir : "");
+        return dir ? "Envío: " + dir : "Sin dirección registrada";
+      }
+      // Referencia de Google Maps para una dirección: el enlace abre esa
+      // dirección en Google Maps (búsqueda), para ubicarla y llegar a ella.
+      function mapsUrl(dir) {
+        return "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(String(dir || "").trim());
+      }
+      function mapsLinkHtml(dir) {
+        var d = String(dir || "").trim();
+        if (!d) return "";
+        return '<a href="' + mapsUrl(d) + '" target="_blank" rel="noopener" class="link-cafetal">Ver en Google Maps</a>';
+      }
+      // La entrega de un pedido como HTML: el mismo texto de entregaTexto,
+      // con su enlace “Ver en Google Maps” cuando el panel sí muestra la
+      // dirección (conDireccion). El barista nunca ve direcciones ni enlace.
+      function entregaHtml(p, conDireccion) {
+        var dir = (p.direccion_envio || "").trim();
+        var html = esc(entregaTexto(p, conDireccion));
+        if (conDireccion && dir && p.modo_entrega !== "recolecto") html += " · " + mapsLinkHtml(dir);
+        return html;
+      }
+      // Opciones del desplegable de parentesco para un regalo.
+      function relacionesOpts(sel) {
+        return '<option value="">Elige el parentesco…</option>' + RELACIONES.map(function (r) {
+          return '<option value="' + esc(r) + '"' + (sel === r ? " selected" : "") + '>' + esc(r) + '</option>';
+        }).join("");
+      }
+      // Frases sugeridas como botones: al tocar una, se copia al campo de
+      // mensaje; el cliente también puede escribir sus propias palabras.
+      function frasesHtml(mensajeActual) {
+        return '<div class="frases" role="group" aria-label="Frases sugeridas">' + frasesRegalo.map(function (f) {
+          return '<button type="button" class="frase-chip' + (mensajeActual === f ? " on" : "") + '" data-frase="' + esc(f) + '">' + esc(f) + '</button>';
+        }).join("") + '</div>';
+      }
+      // Enlaza las frases sugeridas de un formulario con su campo de mensaje.
+      function enlazarFrases(scope, textareaId, alElegir) {
+        Array.prototype.forEach.call(scope.querySelectorAll("[data-frase]"), function (b) {
+          b.addEventListener("click", function () {
+            var f = b.getAttribute("data-frase");
+            var ta = $(textareaId);
+            if (ta) ta.value = f;
+            alElegir(f);
+            Array.prototype.forEach.call(scope.querySelectorAll("[data-frase]"), function (x) {
+              x.classList.toggle("on", x.getAttribute("data-frase") === f);
+            });
+          });
+        });
+      }
+      // Parentesco y mensaje de un regalo, para los paneles del equipo.
+      function regaloDetalleHtml(p) {
+        if (!p.es_regalo) return "";
+        var rel = (p.regalo_relacion || "").trim(), msg = (p.regalo_mensaje || "").trim();
+        var h = "";
+        if (rel) h += '<div class="meta">Parentesco: ' + esc(rel) + '</div>';
+        if (msg) h += '<div class="meta">Mensaje para la persona: “' + esc(msg) + '”</div>';
+        return h;
+      }
       function rolCorto(r) { var x = ROLES.find(function (y) { return y.id === r; }); return x ? x.corto : r; }
       function rolLabel(r) { var x = ROLES.find(function (y) { return y.id === r; }); return x ? x.label : r; }
       function formatFecha(iso) {
@@ -744,6 +884,29 @@
             });
           });
       }
+      // Sube el logo del evento al bucket público “logos-eventos” y devuelve su URL pública.
+      function subirLogoEvento(file) {
+        var ext = "";
+        var m = String(file.name || "").match(/\.([a-zA-Z0-9]+)$/);
+        if (m) ext = m[1].toLowerCase().replace(/[^a-z0-9]/g, "");
+        if (!ext) ext = (String(file.type || "").split("/")[1] || "png").toLowerCase().replace(/[^a-z0-9]/g, "");
+        var ruta = "logo-" + Date.now() + "-" + Math.random().toString(36).slice(2, 10) + "." + ext;
+        var headers = { "apikey": SB_KEY, "Content-Type": file.type || "application/octet-stream", "x-upsert": "false" };
+        headers["Authorization"] = "Bearer " + (accessToken || SB_KEY);
+        return fetch(SB_URL + "/storage/v1/object/logos-eventos/" + ruta, { method: "POST", headers: headers, body: file })
+          .then(function (res) {
+            return res.text().then(function (txt) {
+              var data = null;
+              try { data = txt ? JSON.parse(txt) : null; } catch (e) { data = null; }
+              if (!res.ok) {
+                var err = new Error((data && (data.message || data.msg)) || ("HTTP " + res.status));
+                err.data = data; err.status = res.status;
+                throw err;
+              }
+              return SB_URL + "/storage/v1/object/public/logos-eventos/" + ruta;
+            });
+          });
+      }
       function authApi(path, body, method) {
         var headers = { "apikey": SB_KEY, "Content-Type": "application/json" };
         if (accessToken) headers["Authorization"] = "Bearer " + accessToken;
@@ -793,9 +956,22 @@
           .then(function (rows) { hayAdmin = (rows || []).length > 0; renderCuenta(); })
           .catch(function () { hayAdmin = true; });
       }
+      // Frases sugeridas para los mensajes de regalo: viven en la tabla
+      // mensajes_regalo de Supabase para poder sumar más sin tocar la página.
+      // Si la lectura falla, quedan las frases de la lista inicial.
+      function cargarMensajesRegalo() {
+        return sb("mensajes_regalo?select=*&limit=30")
+          .then(function (rows) {
+            var frases = (rows || []).map(function (r) {
+              return String((r && (r.frase || r.texto || r.mensaje)) || "").trim();
+            }).filter(Boolean);
+            if (frases.length) { frasesRegalo = frases; renderPedirForm(); }
+          })
+          .catch(function () { /* se quedan las frases iniciales */ });
+      }
       function cargarMisPedidos() {
         if (!cliente) { misPedidos = []; return Promise.resolve(); }
-        return sb("pedidos?select=id,cafe,cantidad,direccion_envio,descuento,estado,cobrado,noticia_id,creado_en&cliente_id=eq." + cliente.id + "&order=creado_en.desc&limit=50")
+        return sb("pedidos?select=id,cafe,cantidad,direccion_envio,modo_entrega,es_regalo,regalo_para,regalo_relacion,regalo_mensaje,descuento,estado,cobrado,noticia_id,creado_en&cliente_id=eq." + cliente.id + "&order=creado_en.desc&limit=50")
           .then(function (rows) { misPedidos = rows || []; renderNav(); renderMisPedidos(); renderPedirForm(); renderCuponera(); })
           .catch(function () { misPedidos = []; });
       }
@@ -839,9 +1015,9 @@
         else if (soyBarista()) panelLink = '<a href="#equipo" class="pill-panel">Panel barista</a>';
         else if (soyCajero()) panelLink = '<a href="#equipo" class="pill-panel">Panel cajero</a>';
         var cuentaLink = cliente
-          ? '<span style="padding:0.5rem 0;font-weight:700">Hola, ' + esc(cliente.nombre.split(" ")[0]) + '</span>' +
+          ? '<a href="#cuenta" data-tab-link="cuenta">Hola, ' + esc(cliente.nombre.split(" ")[0]) + '</a>' +
             '<a href="#pedir" class="pill-link" aria-label="Mis pedidos, ' + misPedidos.length + ' pedidos directos registrados">Mis pedidos (' + misPedidos.length + ')</a>'
-          : '<a href="#cuenta" class="pill-link">Mi cuenta</a>';
+          : '<a href="#cuenta" data-tab-link="cuenta" class="pill-link">Mi cuenta</a>';
         $("nav-desktop").innerHTML =
           '<a href="#inicio" data-tab-link="principal" class="tab-link-on">Principal</a><a href="#hoy">Lo bueno de hoy</a><a href="#pedir">Pedir</a><a href="#noticias">Buenas noticias</a><a href="#cuponera">Cuponera</a><a href="#evento" data-tab-link="eventos">Eventos</a>' +
           panelLink + cuentaLink;
@@ -854,9 +1030,9 @@
         if (soyAdmin()) panelMobile = '<a href="#admin" style="font-weight:700;color:var(--cafetal)">Panel de dueño</a>';
         else if (soyBarista() || soyCajero()) panelMobile = '<a href="#equipo" style="font-weight:700;color:var(--cafetal)">Panel de ' + esc(rolCorto(cliente.rol).toLowerCase()) + '</a>';
         $("nav-mobile").innerHTML =
-          '<a href="#inicio" data-tab-link="principal" class="tab-link-on">Principal</a><a href="#hoy">Lo bueno de hoy</a><a href="#pedir">Pedir</a><a href="#noticias">Buenas noticias</a><a href="#cuponera">Cuponera</a><a href="#evento" data-tab-link="eventos">Eventos</a><a href="#cuenta">Mi cuenta</a>' + panelMobile;
+          '<a href="#inicio" data-tab-link="principal" class="tab-link-on">Principal</a><a href="#hoy">Lo bueno de hoy</a><a href="#pedir">Pedir</a><a href="#noticias">Buenas noticias</a><a href="#cuponera">Cuponera</a><a href="#evento" data-tab-link="eventos">Eventos</a><a href="#cuenta" data-tab-link="cuenta">Mi cuenta</a>' + panelMobile;
         $("nav-footer").innerHTML =
-          '<a href="#inicio" data-tab-link="principal" class="tab-link-on">Principal</a><a href="#hoy">Lo bueno de hoy</a><a href="#pedir">Pedir</a><a href="#noticias">Buenas noticias</a><a href="#cuenta">Mi cuenta</a><a href="#cuponera">Cuponera</a><a href="#evento" data-tab-link="eventos">Eventos</a>' +
+          '<a href="#inicio" data-tab-link="principal" class="tab-link-on">Principal</a><a href="#hoy">Lo bueno de hoy</a><a href="#pedir">Pedir</a><a href="#noticias">Buenas noticias</a><a href="#cuenta" data-tab-link="cuenta">Mi cuenta</a><a href="#cuponera">Cuponera</a><a href="#evento" data-tab-link="eventos">Eventos</a>' +
           (soyAdmin() ? '<a href="#admin" style="font-weight:700;color:var(--cempasuchil)">Panel dueño</a>' : "") +
           ((soyBarista() || soyCajero()) ? '<a href="#equipo" style="font-weight:700;color:var(--cempasuchil)">Panel ' + esc(rolCorto(cliente.rol).toLowerCase()) + '</a>' : "");
         var burger = $("burger");
@@ -872,26 +1048,31 @@
         });
       }
 
-      /* ---------- Vistas: Principal / Eventos ----------
-         Dos vistas dentro de la misma página: se cambia desde los enlaces
-         “Principal” y “Eventos” del menú principal (y móvil y pie); solo
-         muestra una y oculta la otra, sin recargar ni salir de la página. */
+      /* ---------- Vistas: Principal / Eventos / Mi cuenta ----------
+         Tres vistas dentro de la misma página: se cambia desde los enlaces
+         “Principal”, “Eventos” y “Mi cuenta” del menú principal (y móvil y
+         pie); solo muestra una y oculta las demás, sin recargar ni salir de
+         la página. La vista de Mi cuenta trae el perfil con la dirección
+         guardada y la seguridad, y debajo los paneles del equipo. */
       var vistaActual = "principal";
       function mostrarVista(v, sinScroll) {
-        vistaActual = v === "eventos" ? "eventos" : "principal";
-        var esEventos = vistaActual === "eventos";
-        $("vista-principal").classList.toggle("hidden", esEventos);
-        $("vista-eventos").classList.toggle("hidden", !esEventos);
+        vistaActual = (v === "eventos" || v === "cuenta") ? v : "principal";
+        $("vista-principal").classList.toggle("hidden", vistaActual !== "principal");
+        $("vista-eventos").classList.toggle("hidden", vistaActual !== "eventos");
+        $("vista-cuenta").classList.toggle("hidden", vistaActual !== "cuenta");
         Array.prototype.forEach.call(document.querySelectorAll("[data-tab-link]"), function (a) {
           a.classList.toggle("tab-link-on", a.getAttribute("data-tab-link") === vistaActual);
         });
-        if (esEventos) detenerCarrusel(); else iniciarCarrusel();
+        if (vistaActual === "principal") iniciarCarrusel(); else detenerCarrusel();
         if (!sinScroll) window.scrollTo(0, 0);
-        try { history.replaceState(null, "", esEventos ? "#evento" : "#inicio"); } catch (e) { /* sin historial disponible */ }
+        try { history.replaceState(null, "", vistaActual === "eventos" ? "#evento" : vistaActual === "cuenta" ? "#cuenta" : "#inicio"); } catch (e) { /* sin historial disponible */ }
       }
-      // Todo enlace interno apunta a una de las dos vistas: #evento abre la de
-      // eventos; cualquier otro regresa a Principal y deja que el navegador
-      // salte a la sección (ya visible para cuando ocurre el salto).
+      // Todo enlace interno apunta a una de las tres vistas: #evento abre la
+      // de eventos; #cuenta abre la de Mi cuenta, y #admin / #equipo también,
+      // porque los paneles del equipo viven en esa vista (sin preventDefault,
+      // para que el navegador salte hasta el panel); cualquier otro enlace
+      // regresa a Principal y deja que el navegador salte a la sección (ya
+      // visible para cuando ocurre el salto).
       document.addEventListener("click", function (e) {
         var t = e.target;
         var a = t && t.closest ? t.closest('a[href^="#"]') : null;
@@ -900,7 +1081,15 @@
         if (href === "#evento") {
           e.preventDefault();
           mostrarVista("eventos");
-        } else if (vistaActual === "eventos") {
+        } else if (href === "#cuenta") {
+          e.preventDefault();
+          mostrarVista("cuenta");
+        } else if (href === "#admin" || href === "#equipo") {
+          if (vistaActual !== "cuenta") {
+            mostrarVista("cuenta", true);
+            try { history.replaceState(null, "", href); } catch (err) { /* sin historial disponible */ }
+          }
+        } else if (vistaActual !== "principal") {
           mostrarVista("principal", true);
           try { history.replaceState(null, "", href); } catch (err) { /* sin historial disponible */ }
         }
@@ -1240,6 +1429,7 @@
       function renderPedirForm() {
         var box = $("pedir-form");
         if (!box) return;
+        renderRegalar();
         if (!cliente) {
           var paso1Invitado = carrito.length
             ? bloqueCarrito()
@@ -1264,20 +1454,146 @@
         var paso1 = carrito.length
           ? bloqueCarrito()
           : bloquePedidoVacio();
+        var guardada = (cliente.direccion_envio || "").trim();
+        // Canje del café gratis: cuando la cuponera está en 10 sellos, el
+        // siguiente café (el 11.º) es gratis y el cliente elige si es para
+        // él o si se lo regala a alguien. Si lo regala, la entrega normal
+        // del pedido se sustituye por los datos de esa persona.
+        var tocaGratis = miCuponera().siguienteGratis;
+        var bloqueGratis = "";
+        if (tocaGratis) {
+          bloqueGratis =
+          '<div class="field" style="margin-top:1.5rem;border:2px solid var(--cempasuchil);border-radius:1rem;padding:1rem 1.125rem;background:rgba(242,168,29,0.12)">' +
+          '<p style="margin:0;line-height:1.55"><strong>¡Tu café número 11 va por nuestra cuenta!</strong> Este pedido usa tu café gratis de la cuponera.</p>' +
+          '<span class="label" id="p-regalo-label" style="margin-top:1rem">¿Para quién es tu café gratis?</span>' +
+          '<div class="entrega-opts" role="radiogroup" aria-labelledby="p-regalo-label">' +
+          '<button type="button" role="radio" aria-checked="' + (!regaloEsRegalo ? "true" : "false") + '" class="entrega-opt' + (!regaloEsRegalo ? " on" : "") + '" data-regalo="mio"><span class="dot" aria-hidden="true"></span>Es para mí</button>' +
+          '<button type="button" role="radio" aria-checked="' + (regaloEsRegalo ? "true" : "false") + '" class="entrega-opt' + (regaloEsRegalo ? " on" : "") + '" data-regalo="regalo"><span class="dot" aria-hidden="true"></span>Se lo regalo a alguien</button>' +
+          '</div>' +
+          '<div id="p-regalo-detalle" class="entrega-detalle' + (regaloEsRegalo ? "" : " hidden") + '">' +
+          '<label class="label" for="p-regalo-para">¿A quién se lo regalas?</label>' +
+          '<input id="p-regalo-para" class="input" placeholder="Nombre de la persona" autocomplete="off" value="' + esc(regaloParaTxt) + '" />' +
+          '<label class="label" for="p-regalo-relacion" style="margin-top:1rem">¿Qué es de ti?</label>' +
+          '<select id="p-regalo-relacion" class="input">' + relacionesOpts(regaloRelacionTxt) + '</select>' +
+          '<label class="label" for="p-regalo-mensaje" style="margin-top:1rem">Unas palabras para esa persona</label>' +
+          frasesHtml(regaloMensajeTxt) +
+          '<textarea id="p-regalo-mensaje" class="input" rows="2" placeholder="Elige una frase o escribe las tuyas" style="margin-top:0.5rem">' + esc(regaloMensajeTxt) + '</textarea>' +
+          '<span class="label" id="p-regalo-entrega-label" style="margin-top:1rem">¿Cómo lo recibe?</span>' +
+          '<div class="entrega-opts" role="radiogroup" aria-labelledby="p-regalo-entrega-label">' +
+          '<button type="button" role="radio" aria-checked="' + (regaloModoEntrega === "envio" ? "true" : "false") + '" class="entrega-opt' + (regaloModoEntrega === "envio" ? " on" : "") + '" data-regalo-entrega="envio"><span class="dot" aria-hidden="true"></span>Se lo enviamos a su dirección</button>' +
+          '<button type="button" role="radio" aria-checked="' + (regaloModoEntrega === "recolecto" ? "true" : "false") + '" class="entrega-opt' + (regaloModoEntrega === "recolecto" ? " on" : "") + '" data-regalo-entrega="recolecto"><span class="dot" aria-hidden="true"></span>Pasa por él a la cafetería</button>' +
+          '</div>' +
+          '<div id="p-regalo-dir-wrap" class="entrega-detalle' + (regaloModoEntrega === "envio" ? "" : " hidden") + '">' +
+          '<label class="label" for="p-regalo-direccion">Dirección de esa persona</label>' +
+          '<textarea id="p-regalo-direccion" class="input" rows="2" placeholder="Calle, número, colonia y ciudad">' + esc(regaloDireccionTxt) + '</textarea>' +
+          '</div>' +
+          '<div id="p-regalo-recolecto-wrap" class="entrega-detalle' + (regaloModoEntrega === "recolecto" ? "" : " hidden") + '">' +
+          '<p class="note note-soft">Queda a nombre de esa persona para que pase por él a la cafetería.</p></div>' +
+          '</div>' +
+          '<p class="err hidden" id="err-p-regalo" role="alert"></p></div>';
+        }
         box.innerHTML = '<form class="form-card" id="form-pedido"><h3>Tu pedido directo</h3>' +
           '<p style="margin-top:0.5rem;color:rgba(59,34,24,0.75)">Pedido a nombre de <strong>' + esc(cliente.nombre) + '</strong>' +
           (cliente.telefono ? ' · ' + esc(cliente.telefono) : '') +
           '. <a href="#cuenta" class="link-cafetal">Cambiar mis datos</a></p>' +
-          '<p class="step-head">Paso 1 · Elige tu café</p>' + paso1 +
+          '<p class="step-head">Paso 1 · Elige tu café</p>' + paso1 + bloqueGratis +
           '<p class="step-head">Pasos 2 y 3 · Tu noticia y la confirmación</p>' +
-          '<div class="field"><label class="label" for="p-direccion">Dirección de envío para este pedido</label>' +
-          '<textarea id="p-direccion" class="input" rows="2">' + esc(cliente.direccion_envio || "") + '</textarea>' +
-          '<p class="err hidden" id="err-p-direccion" role="alert"></p>' +
-          '<p class="hint">Es la dirección guardada en tu cuenta; si la cambias aquí, queda guardada para tu siguiente pedido.</p></div>' +
+          '<div class="field' + (tocaGratis && regaloEsRegalo ? " hidden" : "") + '" id="p-entrega-normal"><span class="label" id="p-entrega-label">¿Cómo recibes tu pedido?</span>' +
+          '<div class="entrega-opts" role="radiogroup" aria-labelledby="p-entrega-label">' +
+          MODOS_ENTREGA.map(function (m) {
+            return '<button type="button" role="radio" aria-checked="' + (pedidoModo === m.id ? "true" : "false") + '" class="entrega-opt' + (pedidoModo === m.id ? " on" : "") + '" data-modo="' + m.id + '"><span class="dot" aria-hidden="true"></span>' + esc(m.label) + '</button>';
+          }).join("") +
+          '</div>' +
+          '<div id="p-detalle-guardada" class="entrega-detalle' + (pedidoModo === "guardada" ? "" : " hidden") + '">' +
+          (guardada
+            ? '<p class="note note-soft">Se envía a tu dirección guardada: <strong>' + esc(guardada) + '</strong> · ' + mapsLinkHtml(guardada) + '</p>'
+            : '<p class="note note-soft">Todavía no tienes una dirección guardada en tu cuenta.</p>') +
+          '</div>' +
+          '<div id="p-detalle-otra" class="entrega-detalle' + (pedidoModo === "otra" ? "" : " hidden") + '">' +
+          '<label class="label" for="p-otra-direccion">Dirección para este pedido</label>' +
+          '<textarea id="p-otra-direccion" class="input" rows="2" placeholder="Calle, número, colonia y ciudad">' + esc(pedidoOtraDireccion) + '</textarea>' +
+          '<p id="p-otra-maps" style="margin-top:0.5rem"' + (pedidoOtraDireccion.trim() ? "" : ' class="hidden"') + '>' + mapsLinkHtml(pedidoOtraDireccion) + '</p>' +
+          '<p class="hint">Es solo para este pedido; tu dirección guardada no cambia.</p>' +
+          '<label class="check-row" for="p-guardar-nueva"><input type="checkbox" id="p-guardar-nueva"' + (pedidoGuardarNueva ? " checked" : "") + ' /><span>Guardar esta dirección para mis próximos pedidos</span></label>' +
+          '</div>' +
+          '<div id="p-detalle-recolecto" class="entrega-detalle' + (pedidoModo === "recolecto" ? "" : " hidden") + '">' +
+          '<p class="note note-soft">Pasas por tu café a la cafetería; no necesitas dirección.</p></div>' +
+          '<p class="err hidden" id="err-p-entrega" role="alert"></p></div>' +
           avisoDesc + '<div id="pedido-msg"></div>' +
           '<button type="submit" class="btn btn-cacao" style="margin-top:1.5rem" id="btn-pedido">Confirmar pedido directo</button></form>';
         if (carrito.length) enlazarCarrito();
         $("form-pedido").addEventListener("submit", onPedir);
+        Array.prototype.forEach.call(box.querySelectorAll("[data-modo]"), function (b) {
+          b.addEventListener("click", function () {
+            pedidoModo = b.getAttribute("data-modo");
+            Array.prototype.forEach.call(box.querySelectorAll("[data-modo]"), function (x) {
+              var activo = x.getAttribute("data-modo") === pedidoModo;
+              x.classList.toggle("on", activo);
+              x.setAttribute("aria-checked", activo ? "true" : "false");
+            });
+            ["guardada", "otra", "recolecto"].forEach(function (m) {
+              var d = $("p-detalle-" + m);
+              if (d) d.classList.toggle("hidden", m !== pedidoModo);
+            });
+            var eE = $("err-p-entrega");
+            if (eE) eE.classList.add("hidden");
+          });
+        });
+        var otraTxt = $("p-otra-direccion");
+        if (otraTxt) otraTxt.addEventListener("input", function () {
+          pedidoOtraDireccion = otraTxt.value;
+          var om = $("p-otra-maps");
+          if (om) { om.innerHTML = mapsLinkHtml(pedidoOtraDireccion); om.classList.toggle("hidden", !pedidoOtraDireccion.trim()); }
+        });
+        var guardaChk = $("p-guardar-nueva");
+        if (guardaChk) guardaChk.addEventListener("change", function () { pedidoGuardarNueva = guardaChk.checked; });
+        // Canje del café gratis: para mí o de regalo, y cómo lo recibe la persona.
+        Array.prototype.forEach.call(box.querySelectorAll("[data-regalo]"), function (b) {
+          b.addEventListener("click", function () {
+            regaloEsRegalo = b.getAttribute("data-regalo") === "regalo";
+            Array.prototype.forEach.call(box.querySelectorAll("[data-regalo]"), function (x) {
+              var activo = (x.getAttribute("data-regalo") === "regalo") === regaloEsRegalo;
+              x.classList.toggle("on", activo);
+              x.setAttribute("aria-checked", activo ? "true" : "false");
+            });
+            var det = $("p-regalo-detalle");
+            if (det) det.classList.toggle("hidden", !regaloEsRegalo);
+            var normal = $("p-entrega-normal");
+            if (normal) normal.classList.toggle("hidden", regaloEsRegalo);
+            var eR = $("err-p-regalo");
+            if (eR) eR.classList.add("hidden");
+          });
+        });
+        Array.prototype.forEach.call(box.querySelectorAll("[data-regalo-entrega]"), function (b) {
+          b.addEventListener("click", function () {
+            regaloModoEntrega = b.getAttribute("data-regalo-entrega");
+            Array.prototype.forEach.call(box.querySelectorAll("[data-regalo-entrega]"), function (x) {
+              var activo = x.getAttribute("data-regalo-entrega") === regaloModoEntrega;
+              x.classList.toggle("on", activo);
+              x.setAttribute("aria-checked", activo ? "true" : "false");
+            });
+            var dw = $("p-regalo-dir-wrap");
+            if (dw) dw.classList.toggle("hidden", regaloModoEntrega !== "envio");
+            var rw = $("p-regalo-recolecto-wrap");
+            if (rw) rw.classList.toggle("hidden", regaloModoEntrega !== "recolecto");
+            var eR = $("err-p-regalo");
+            if (eR) eR.classList.add("hidden");
+          });
+        });
+        var regaloParaEl = $("p-regalo-para");
+        if (regaloParaEl) regaloParaEl.addEventListener("input", function () { regaloParaTxt = regaloParaEl.value; });
+        var regaloRelEl = $("p-regalo-relacion");
+        if (regaloRelEl) regaloRelEl.addEventListener("change", function () { regaloRelacionTxt = regaloRelEl.value; });
+        var regaloMsgEl = $("p-regalo-mensaje");
+        if (regaloMsgEl) regaloMsgEl.addEventListener("input", function () {
+          regaloMensajeTxt = regaloMsgEl.value;
+          Array.prototype.forEach.call(box.querySelectorAll("[data-frase]"), function (x) {
+            x.classList.toggle("on", x.getAttribute("data-frase") === regaloMensajeTxt);
+          });
+        });
+        enlazarFrases(box, "p-regalo-mensaje", function (f) { regaloMensajeTxt = f; });
+        var regaloDirEl = $("p-regalo-direccion");
+        if (regaloDirEl) regaloDirEl.addEventListener("input", function () { regaloDireccionTxt = regaloDirEl.value; });
       }
       function onPedir(ev) {
         ev.preventDefault();
@@ -1294,15 +1610,66 @@
           cafe = "";
           cantidadPedido = 0;
         }
-        var direccion = ($("p-direccion").value || "").trim();
+        // Canje del café gratis: si toca el 11.º y el cliente eligió
+        // regalarlo, el pedido va a nombre de esa persona: se guarda
+        // es_regalo y regalo_para, y la entrega es a su dirección
+        // (modo “otra”, con su dirección) o su recolección en cafetería.
+        // Si es para el cliente, o no toca gratis, vale la entrega normal:
+        // la dirección guardada (sin escribir nada), otra dirección solo
+        // para este pedido (que solo se guarda si el cliente marca el
+        // cuadrito) o recolecto en cafetería (sin dirección).
+        var tocaGratis = miCuponera().siguienteGratis;
+        var esRegalo = !!(tocaGratis && regaloEsRegalo);
+        var regaloPara = null;
+        var regaloRelacion = null;
+        var regaloMensaje = null;
+        var errRegalo = "";
+        var modo = pedidoModo;
+        var direccion = "";
+        var guardarNueva = false;
+        var errEntrega = "";
+        if (esRegalo) {
+          var paraEl = $("p-regalo-para");
+          regaloPara = ((paraEl && paraEl.value) || regaloParaTxt || "").trim();
+          if (!regaloPara) errRegalo = "Dinos el nombre de la persona a quien se lo regalas.";
+          var relEl = $("p-regalo-relacion");
+          regaloRelacion = ((relEl && relEl.value) || regaloRelacionTxt || "").trim() || null;
+          if (!regaloRelacion && !errRegalo) errRegalo = "Elige qué es de ti esa persona.";
+          var msgEl = $("p-regalo-mensaje");
+          regaloMensaje = ((msgEl && msgEl.value) || regaloMensajeTxt || "").trim() || null;
+          if (!regaloMensaje && !errRegalo) errRegalo = "Elige una frase o escribe unas palabras para esa persona.";
+          if (regaloModoEntrega === "envio") {
+            var dirEl = $("p-regalo-direccion");
+            direccion = ((dirEl && dirEl.value) || regaloDireccionTxt || "").trim();
+            modo = "otra";
+            if (!direccion && !errRegalo) errRegalo = "Escribe la dirección de esa persona para poder enviárselo.";
+          } else {
+            modo = "recolecto";
+            direccion = "";
+          }
+        } else if (modo === "guardada") {
+          direccion = (cliente.direccion_envio || "").trim();
+          if (!direccion) errEntrega = "Todavía no tienes una dirección guardada: elige “Enviar a otra dirección” para escribir una.";
+        } else if (modo === "otra") {
+          var otraEl = $("p-otra-direccion");
+          direccion = (otraEl && otraEl.value ? otraEl.value : "").trim();
+          var chkEl = $("p-guardar-nueva");
+          guardarNueva = !!(chkEl && chkEl.checked);
+          if (!direccion) errEntrega = "Escribe la dirección para este pedido.";
+        }
         var ok = true;
-        var eD = $("err-p-direccion");
+        var eD = $("err-p-entrega");
         if (!usaCarrito) {
           var msgVacio = $("pedido-msg");
           if (msgVacio) msgVacio.innerHTML = '<p class="note note-err" role="alert" style="margin-top:1rem">Todavía no agregas nada a tu pedido. Elige tu café en <a href="#menu" class="link-cafetal">“Pide tu café”</a> y toca Agregar.</p>';
           ok = false;
         }
-        if (!direccion) { eD.textContent = "Necesitamos la dirección de envío para este pedido."; eD.classList.remove("hidden"); ok = false; } else eD.classList.add("hidden");
+        if (errEntrega) { eD.textContent = errEntrega; eD.classList.remove("hidden"); ok = false; } else eD.classList.add("hidden");
+        var eR = $("err-p-regalo");
+        if (eR) {
+          if (errRegalo) { eR.textContent = errRegalo; eR.classList.remove("hidden"); ok = false; }
+          else eR.classList.add("hidden");
+        }
         if (!ok) return;
         var btn = $("btn-pedido");
         btn.disabled = true; btn.textContent = "Registrando…";
@@ -1311,10 +1678,16 @@
         var cupAntes = miCuponera();
         sb("pedidos", { method: "POST", prefer: "return=representation", body: {
           cliente_id: cliente.id, cafe: cafe, cantidad: cantidadPedido, direccion_envio: direccion,
+          modo_entrega: modo, es_regalo: esRegalo, regalo_para: regaloPara,
+          regalo_relacion: regaloRelacion, regalo_mensaje: regaloMensaje,
           descuento: activo, noticia_id: noticia ? noticia.id : null
         } }).then(function () {
           if (usaCarrito) { carrito = []; renderMenuSeccion(); }
-          if (direccion !== (cliente.direccion_envio || "")) {
+          pedidoOtraDireccion = ""; pedidoGuardarNueva = false;
+          regaloEsRegalo = false; regaloParaTxt = ""; regaloRelacionTxt = ""; regaloMensajeTxt = ""; regaloDireccionTxt = ""; regaloModoEntrega = "envio";
+          // La dirección nueva solo reemplaza a la guardada si el cliente
+          // marcó “Guardar esta dirección para mis próximos pedidos”.
+          if (modo === "otra" && guardarNueva && direccion !== (cliente.direccion_envio || "")) {
             return sb("clientes?id=eq." + cliente.id, { method: "PATCH", body: { direccion_envio: direccion } })
               .then(function () { cliente.direccion_envio = direccion; });
           }
@@ -1326,6 +1699,7 @@
           var msg = $("pedido-msg");
           if (msg) {
             msg.innerHTML = '<div class="note note-ok" role="status" style="margin-top:1rem"><p style="font-weight:700;margin:0">¡Pedido registrado! Te lo preparamos en Cualli.</p>' +
+              (esRegalo ? '<p style="margin-top:0.25rem;color:rgba(255,244,220,0.9)">Tu café gratis va de regalo para <strong>' + esc(regaloPara) + '</strong>: ' + (modo === "recolecto" ? "pasa por él a la cafetería, a su nombre." : "se lo enviamos a su dirección.") + (regaloMensaje ? ' Lleva tus palabras: “' + esc(regaloMensaje) + '”' : "") + '</p>' : "") +
               '<p style="margin-top:0.25rem;color:rgba(255,244,220,0.9)">Tu cuponera lleva ' + cup.sellos + (cup.sellos === 1 ? " café acumulado." : " cafés acumulados.") + '</p></div>';
           }
           if (!cupAntes.siguienteGratis && cup.siguienteGratis) lanzarCelebracion();
@@ -1349,12 +1723,138 @@
         if (!cliente || !misPedidos.length) { box.innerHTML = ""; return; }
         var items = misPedidos.slice(0, 6).map(function (p) {
           return '<li><span><span style="font-weight:700">' + p.cantidad + ' × ' + esc(p.cafe) + '</span>' +
+            (p.es_regalo ? ' <span class="chip chip-sol">Regalo para ' + esc(p.regalo_para || "") + (p.regalo_relacion ? ' (' + esc(p.regalo_relacion) + ')' : "") + '</span>' : "") +
             (p.descuento > 0 ? ' <span class="chip chip-sol">−' + p.descuento + '%</span>' : "") +
             ' <span class="chip chip-cafetal">' + esc(estadoLabel(p.estado)) + '</span>' +
             (p.cobrado ? ' <span class="chip">Cobrado</span>' : "") +
             '</span><time class="when">' + esc(formatFecha(p.creado_en)) + '</time></li>';
         }).join("");
         box.innerHTML = '<h3 class="font-display" style="margin-top:2.5rem;font-size:1.5rem;font-weight:800">Tus pedidos directos</h3><ul class="orders">' + items + '</ul>';
+      }
+
+      /* ---------- Regalar un café (cuando quieras, solo con sesión) ---------- */
+      function renderRegalar() {
+        var sec = $("regalar"), box = $("regalar-body");
+        if (!sec || !box) return;
+        if (!cliente) { sec.classList.add("hidden"); box.innerHTML = ""; return; }
+        sec.classList.remove("hidden");
+        if (!menuItems.some(function (m) { return String(m.id) === String(rgCafeId); })) {
+          rgCafeId = menuItems.length ? menuItems[0].id : "";
+        }
+        var elegido = menuItems.find(function (m) { return String(m.id) === String(rgCafeId); });
+        var total = elegido ? dinero2((Number(elegido.precio) || 0) * rgCantidad) : "$0.00";
+        var opts = menuItems.map(function (m) {
+          return '<option value="' + esc(m.id) + '"' + (String(m.id) === String(rgCafeId) ? " selected" : "") + '>' + esc(m.nombre) + ' — ' + dinero2(m.precio) + '</option>';
+        }).join("");
+        box.innerHTML = '<form class="form-card" id="form-regalo"><h3>Un café de regalo, hoy mismo</h3>' +
+          '<p style="margin-top:0.5rem;line-height:1.6;color:rgba(59,34,24,0.75)">Se paga normal, como un pedido más, y queda marcado como regalo. El café gratis de tu cuponera sigue siendo el premio del número 11.</p>' +
+          '<div class="field" style="margin-top:1rem"><label class="label" for="rg-cafe">¿Qué café le regalas?</label>' +
+          '<select id="rg-cafe" class="input">' + opts + '</select></div>' +
+          '<div class="field"><label class="label" for="rg-cantidad">¿Cuántos?</label>' +
+          '<input id="rg-cantidad" class="input" type="number" min="1" max="50" step="1" value="' + rgCantidad + '" style="max-width:8rem" /></div>' +
+          '<p class="hint" id="rg-total" role="status">Total del regalo: <strong>' + total + '</strong></p>' +
+          '<div class="field"><label class="label" for="rg-para">¿A quién se lo regalas?</label>' +
+          '<input id="rg-para" class="input" placeholder="Nombre de la persona" autocomplete="off" value="' + esc(rgParaTxt) + '" /></div>' +
+          '<div class="field"><label class="label" for="rg-relacion">¿Qué es de ti?</label>' +
+          '<select id="rg-relacion" class="input">' + relacionesOpts(rgRelacionTxt) + '</select></div>' +
+          '<div class="field"><label class="label" for="rg-mensaje">Unas palabras para esa persona</label>' +
+          frasesHtml(rgMensajeTxt) +
+          '<textarea id="rg-mensaje" class="input" rows="2" placeholder="Elige una frase o escribe las tuyas" style="margin-top:0.5rem">' + esc(rgMensajeTxt) + '</textarea></div>' +
+          '<div class="field"><span class="label" id="rg-entrega-label">¿Cómo lo recibe?</span>' +
+          '<div class="entrega-opts" role="radiogroup" aria-labelledby="rg-entrega-label">' +
+          '<button type="button" role="radio" aria-checked="' + (rgModoEntrega === "envio" ? "true" : "false") + '" class="entrega-opt' + (rgModoEntrega === "envio" ? " on" : "") + '" data-rg-entrega="envio"><span class="dot" aria-hidden="true"></span>Se lo enviamos a su dirección</button>' +
+          '<button type="button" role="radio" aria-checked="' + (rgModoEntrega === "recolecto" ? "true" : "false") + '" class="entrega-opt' + (rgModoEntrega === "recolecto" ? " on" : "") + '" data-rg-entrega="recolecto"><span class="dot" aria-hidden="true"></span>Pasa por él a la cafetería</button>' +
+          '</div>' +
+          '<div id="rg-dir-wrap" class="entrega-detalle' + (rgModoEntrega === "envio" ? "" : " hidden") + '">' +
+          '<label class="label" for="rg-direccion">Dirección de esa persona</label>' +
+          '<textarea id="rg-direccion" class="input" rows="2" placeholder="Calle, número, colonia y ciudad">' + esc(rgDireccionTxt) + '</textarea></div>' +
+          '<div id="rg-recolecto-wrap" class="entrega-detalle' + (rgModoEntrega === "recolecto" ? "" : " hidden") + '">' +
+          '<p class="note note-soft">Queda a nombre de esa persona para que pase por él a la cafetería.</p></div>' +
+          '<p class="err hidden" id="err-rg" role="alert"></p></div>' +
+          '<div id="rg-msg">' + (rgOk ? '<div class="note note-ok" role="status"><p style="font-weight:700;margin:0">' + esc(rgOk) + '</p></div>' : "") + '</div>' +
+          '<button type="submit" class="btn btn-cacao" style="margin-top:1.5rem" id="btn-regalo">Regalar este café</button></form>';
+        $("form-regalo").addEventListener("submit", onRegalar);
+        function actualizarTotal() {
+          var m = menuItems.find(function (x) { return String(x.id) === String(rgCafeId); });
+          var t = $("rg-total");
+          if (t && m) t.innerHTML = 'Total del regalo: <strong>' + dinero2((Number(m.precio) || 0) * rgCantidad) + '</strong>';
+        }
+        var cafeSel = $("rg-cafe");
+        cafeSel.addEventListener("change", function () { rgCafeId = cafeSel.value; rgOk = ""; actualizarTotal(); });
+        var cantEl = $("rg-cantidad");
+        cantEl.addEventListener("input", function () {
+          var v = parseInt(cantEl.value, 10);
+          rgCantidad = isFinite(v) ? Math.min(50, Math.max(1, v)) : 1;
+          actualizarTotal();
+        });
+        var paraEl = $("rg-para");
+        paraEl.addEventListener("input", function () { rgParaTxt = paraEl.value; });
+        var relEl = $("rg-relacion");
+        relEl.addEventListener("change", function () { rgRelacionTxt = relEl.value; });
+        var msgEl = $("rg-mensaje");
+        msgEl.addEventListener("input", function () {
+          rgMensajeTxt = msgEl.value;
+          Array.prototype.forEach.call(box.querySelectorAll("[data-frase]"), function (x) {
+            x.classList.toggle("on", x.getAttribute("data-frase") === rgMensajeTxt);
+          });
+        });
+        enlazarFrases(box, "rg-mensaje", function (f) { rgMensajeTxt = f; });
+        Array.prototype.forEach.call(box.querySelectorAll("[data-rg-entrega]"), function (b) {
+          b.addEventListener("click", function () {
+            rgModoEntrega = b.getAttribute("data-rg-entrega");
+            Array.prototype.forEach.call(box.querySelectorAll("[data-rg-entrega]"), function (x) {
+              var activo = x.getAttribute("data-rg-entrega") === rgModoEntrega;
+              x.classList.toggle("on", activo);
+              x.setAttribute("aria-checked", activo ? "true" : "false");
+            });
+            var dw = $("rg-dir-wrap");
+            if (dw) dw.classList.toggle("hidden", rgModoEntrega !== "envio");
+            var rw = $("rg-recolecto-wrap");
+            if (rw) rw.classList.toggle("hidden", rgModoEntrega !== "recolecto");
+            var eR = $("err-rg");
+            if (eR) eR.classList.add("hidden");
+          });
+        });
+        var dirEl = $("rg-direccion");
+        dirEl.addEventListener("input", function () { rgDireccionTxt = dirEl.value; });
+      }
+      function onRegalar(ev) {
+        ev.preventDefault();
+        var elegido = menuItems.find(function (m) { return String(m.id) === String(rgCafeId); });
+        var para = rgParaTxt.trim();
+        var relacion = rgRelacionTxt.trim();
+        var mensaje = rgMensajeTxt.trim();
+        var direccion = rgModoEntrega === "envio" ? rgDireccionTxt.trim() : "";
+        var err = "";
+        if (!elegido) err = "Elige el café que quieres regalar.";
+        else if (!para) err = "Dinos el nombre de la persona a quien se lo regalas.";
+        else if (!relacion) err = "Elige qué es de ti esa persona.";
+        else if (!mensaje) err = "Elige una frase o escribe unas palabras para esa persona.";
+        else if (rgModoEntrega === "envio" && !direccion) err = "Escribe la dirección de esa persona para poder enviárselo.";
+        var eR = $("err-rg");
+        if (err) { if (eR) { eR.textContent = err; eR.classList.remove("hidden"); } return; }
+        if (eR) eR.classList.add("hidden");
+        var btn = $("btn-regalo");
+        btn.disabled = true; btn.textContent = "Registrando…";
+        sb("pedidos", { method: "POST", prefer: "return=representation", body: {
+          cliente_id: cliente.id,
+          cafe: rgCantidad + " × " + elegido.nombre,
+          cantidad: rgCantidad,
+          direccion_envio: direccion,
+          modo_entrega: rgModoEntrega === "envio" ? "otra" : "recolecto",
+          es_regalo: true, regalo_para: para, regalo_relacion: relacion, regalo_mensaje: mensaje,
+          descuento: 0, noticia_id: null
+        } }).then(function () {
+          rgOk = "¡Listo! Tu regalo para " + para + " quedó registrado: " + (rgModoEntrega === "recolecto" ? "pasa por él a la cafetería, a su nombre." : "se lo enviamos a su dirección.");
+          rgParaTxt = ""; rgRelacionTxt = ""; rgMensajeTxt = ""; rgDireccionTxt = ""; rgCantidad = 1; rgModoEntrega = "envio";
+          return cargarMisPedidos();
+        }).then(function () {
+          renderRegalar();
+        }).catch(function () {
+          var msg = $("rg-msg");
+          if (msg) msg.innerHTML = '<p class="note note-err" role="alert">No pudimos registrar tu regalo. Inténtalo de nuevo.</p>';
+          btn.disabled = false; btn.textContent = "Regalar este café";
+        });
       }
 
       /* ---------- Cuponera ---------- */
@@ -1638,9 +2138,53 @@
             '<div><label class="label" for="ev-personas">¿Cuántas personas?</label><input id="ev-personas" class="input" type="number" min="1" step="1" inputmode="numeric" placeholder="Ej. 80" /><p class="err hidden" id="err-ev-personas" role="alert"></p></div>' +
             '<div><label class="label" for="ev-tipo">¿Qué tipo de evento es?</label><input id="ev-tipo" class="input" placeholder="Boda, cumpleaños, evento de empresa…" /><p class="err hidden" id="err-ev-tipo" role="alert"></p></div>' +
           '</div>' +
+          '<div class="field"><span class="label" id="ev-rotulados-label">¿Quieres los vasos rotulados con tu marca?</span>' +
+          '<div class="rot-opts" role="radiogroup" aria-labelledby="ev-rotulados-label">' +
+          '<button type="button" role="radio" aria-checked="' + (eventoRotulados === true ? "true" : "false") + '" class="toggle-btn' + (eventoRotulados === true ? " on" : "") + '" data-rot="si">Sí</button>' +
+          '<button type="button" role="radio" aria-checked="' + (eventoRotulados === false ? "true" : "false") + '" class="toggle-btn' + (eventoRotulados === false ? " on" : "") + '" data-rot="no">No</button>' +
+          '</div><p class="err hidden" id="err-ev-rotulados" role="alert"></p></div>' +
+          '<div id="ev-rotulo-detalle" class="' + (eventoRotulados === true ? "" : "hidden") + '">' +
+            '<div class="field"><label class="label" for="ev-tipo-rotulo">¿Cómo quieres el rótulo?</label>' +
+            '<input id="ev-tipo-rotulo" class="input" placeholder="Ej. logo de mi empresa, nombre del evento o una frase" /><p class="err hidden" id="err-ev-tipo-rotulo" role="alert"></p></div>' +
+            '<div class="field"><label class="label" for="ev-logo">Sube tu logo (opcional)</label>' +
+            '<input id="ev-logo" class="input" type="file" accept="image/*,.png,.jpg,.jpeg,.gif,.webp" />' +
+            '<p class="hint">Foto o imagen de tu logo, por ejemplo PNG o JPG. Si no lo tienes a la mano, envía tu solicitud así y lo vemos después.</p>' +
+            '<p class="err hidden" id="err-ev-logo" role="alert"></p>' +
+            '<div class="logo-preview hidden" id="ev-logo-preview-wrap"><img id="ev-logo-preview" alt="Vista previa de tu logo" /></div></div>' +
+          '</div>' +
           '<div id="evento-msg"></div>' +
           '<button type="submit" class="btn btn-cacao" style="margin-top:1.5rem" id="btn-evento">Enviar mi solicitud</button></form>';
         $("form-evento").addEventListener("submit", onPedirEvento);
+        Array.prototype.forEach.call(box.querySelectorAll("[data-rot]"), function (b) {
+          b.addEventListener("click", function () {
+            eventoRotulados = b.getAttribute("data-rot") === "si";
+            Array.prototype.forEach.call(box.querySelectorAll("[data-rot]"), function (x) {
+              var activo = (x.getAttribute("data-rot") === "si") === eventoRotulados;
+              x.classList.toggle("on", activo);
+              x.setAttribute("aria-checked", activo ? "true" : "false");
+            });
+            var detalle = $("ev-rotulo-detalle");
+            if (detalle) detalle.classList.toggle("hidden", !eventoRotulados);
+            campoErr("err-ev-rotulados", "");
+            if (!eventoRotulados) { campoErr("err-ev-tipo-rotulo", ""); campoErr("err-ev-logo", ""); }
+          });
+        });
+        var logoInput = $("ev-logo");
+        if (logoInput) logoInput.addEventListener("change", function () {
+          var f = logoInput.files && logoInput.files[0];
+          var wrap = $("ev-logo-preview-wrap"), img = $("ev-logo-preview");
+          if (!f) { if (wrap) wrap.classList.add("hidden"); campoErr("err-ev-logo", ""); return; }
+          if (!/^image\//.test(f.type || "") && !/\.(png|jpe?g|gif|webp|svg)$/i.test(f.name || "")) {
+            campoErr("err-ev-logo", "Sube tu logo como foto o imagen (por ejemplo PNG o JPG).");
+            if (wrap) wrap.classList.add("hidden");
+            return;
+          }
+          campoErr("err-ev-logo", "");
+          if (wrap && img && window.URL && URL.createObjectURL) {
+            img.src = URL.createObjectURL(f);
+            wrap.classList.remove("hidden");
+          }
+        });
       }
       function onPedirEvento(ev) {
         ev.preventDefault();
@@ -1650,6 +2194,10 @@
         var lugar = $("ev-lugar").value.trim();
         var personas = Number($("ev-personas").value);
         var tipo = $("ev-tipo").value.trim();
+        var tipoRotuloEl = $("ev-tipo-rotulo");
+        var tipoRotulo = eventoRotulados === true && tipoRotuloEl ? tipoRotuloEl.value.trim() : "";
+        var logoInput = $("ev-logo");
+        var logoFile = eventoRotulados === true && logoInput && logoInput.files ? (logoInput.files[0] || null) : null;
         var ok = true;
         campoErr("err-ev-nombre", nombre ? "" : "Dinos tu nombre."); if (!nombre) ok = false;
         campoErr("err-ev-contacto", contacto ? "" : "Déjanos un correo o un teléfono para responderte."); if (!contacto) ok = false;
@@ -1657,20 +2205,35 @@
         campoErr("err-ev-lugar", lugar ? "" : "Dinos dónde será tu evento."); if (!lugar) ok = false;
         campoErr("err-ev-personas", personas >= 1 ? "" : "Dinos cuántas personas esperan, aunque sea un aproximado."); if (!(personas >= 1)) ok = false;
         campoErr("err-ev-tipo", tipo ? "" : "Cuéntanos qué tipo de evento es."); if (!tipo) ok = false;
+        campoErr("err-ev-rotulados", eventoRotulados === null ? "Elige Sí o No para los vasos rotulados." : ""); if (eventoRotulados === null) ok = false;
+        if (eventoRotulados === true) {
+          campoErr("err-ev-tipo-rotulo", tipoRotulo ? "" : "Cuéntanos cómo quieres el rótulo."); if (!tipoRotulo) ok = false;
+          var logoOk = !logoFile || /^image\//.test(logoFile.type || "") || /\.(png|jpe?g|gif|webp|svg)$/i.test(logoFile.name || "");
+          campoErr("err-ev-logo", logoOk ? "" : "Sube tu logo como foto o imagen (por ejemplo PNG o JPG)."); if (!logoOk) ok = false;
+        }
         if (!ok) return;
         var btn = $("btn-evento");
-        btn.disabled = true; btn.textContent = "Enviando…";
-        sb("solicitudes_evento", { method: "POST", prefer: "return=representation", body: {
-          nombre: nombre, contacto: contacto, fecha: fecha, lugar: lugar,
-          personas: personas, tipo_evento: tipo, cliente_id: cliente ? cliente.id : null
-        } }).then(function () {
+        btn.disabled = true; btn.textContent = logoFile ? "Subiendo tu logo…" : "Enviando…";
+        var etapa = logoFile ? "logo" : "guardar";
+        var logoListo = logoFile ? subirLogoEvento(logoFile) : Promise.resolve(null);
+        logoListo.then(function (logoUrl) {
+          etapa = "guardar";
+          btn.textContent = "Enviando…";
+          return sb("solicitudes_evento", { method: "POST", prefer: "return=representation", body: {
+            nombre: nombre, contacto: contacto, fecha: fecha, lugar: lugar,
+            personas: personas, tipo_evento: tipo, cliente_id: cliente ? cliente.id : null,
+            rotulados: eventoRotulados, tipo_rotulo: eventoRotulados === true ? tipoRotulo : null,
+            logo_url: logoUrl || null
+          } });
+        }).then(function () {
           eventoOk = "¡Recibimos tu solicitud, " + nombre.split(" ")[0] + "! Tu estación para el " + formatFechaDia(fecha) + " ya quedó guardada y el equipo de Cualli se pone en contacto contigo.";
+          eventoRotulados = null;
           renderEventoForm();
           var card = $("form-evento");
           if (card) card.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "center" });
         }).catch(function () {
           var msg = $("evento-msg");
-          if (msg) msg.innerHTML = '<p class="note note-err" role="alert" style="margin-top:1rem">No pudimos guardar tu solicitud. Inténtalo de nuevo.</p>';
+          if (msg) msg.innerHTML = '<p class="note note-err" role="alert" style="margin-top:1rem">' + (etapa === "logo" ? "No pudimos subir tu logo. Revisa que sea una imagen e inténtalo de nuevo, o quita el archivo y envía tu solicitud sin logo." : "No pudimos guardar tu solicitud. Inténtalo de nuevo.") + '</p>';
           btn.disabled = false; btn.textContent = "Enviar mi solicitud";
         });
       }
@@ -1811,7 +2374,7 @@
       }
       function cerrarSesion() {
         authApi("logout", null, "POST").catch(function () {});
-        accessToken = ""; cliente = null; misPedidos = []; misNoticias = []; resultadoCajero = null; busquedaCajero = ""; cupCaidaPendiente = null; cupSellosPrevios = null; carrito = [];
+        accessToken = ""; cliente = null; misPedidos = []; misNoticias = []; resultadoCajero = null; busquedaCajero = ""; cupCaidaPendiente = null; cupSellosPrevios = null; carrito = []; regaloEsRegalo = false; regaloParaTxt = ""; regaloRelacionTxt = ""; regaloMensajeTxt = ""; regaloDireccionTxt = ""; regaloModoEntrega = "envio"; rgCafeId = ""; rgCantidad = 1; rgParaTxt = ""; rgRelacionTxt = ""; rgMensajeTxt = ""; rgDireccionTxt = ""; rgModoEntrega = "envio"; rgOk = "";
         renderNav(); renderCuenta(); renderNoticiaForm(); renderPedirForm(); renderMisPedidos(); renderCuponera(); renderPaneles(); renderEventoForm(); renderMenuSeccion();
       }
 
@@ -1850,7 +2413,7 @@
               '<div><label class="label" for="e-nombre">Tu nombre</label><input id="e-nombre" class="input" value="' + esc(cliente.nombre) + '" autocomplete="name" /><p class="err hidden" id="err-e-nombre" role="alert"></p></div>' +
               '<div><label class="label" for="e-apodo">Tu apodo en el muro</label><input id="e-apodo" class="input" value="' + esc(cliente.apodo || "") + '" autocomplete="nickname" placeholder="Vacío = firmas con tus iniciales" /></div>' +
               '<div><label class="label" for="e-telefono">Teléfono de contacto</label><input id="e-telefono" class="input" type="tel" value="' + esc(cliente.telefono || "") + '" autocomplete="tel" /><p class="err hidden" id="err-e-telefono" role="alert"></p></div>' +
-              '<div><label class="label" for="e-direccion">Dirección de envío</label><textarea id="e-direccion" class="input" rows="2" autocomplete="street-address">' + esc(cliente.direccion_envio || "") + '</textarea><p class="err hidden" id="err-e-direccion" role="alert"></p></div>' +
+              '<div><label class="label" for="e-direccion">Dirección de envío</label><textarea id="e-direccion" class="input" rows="2" autocomplete="street-address">' + esc(cliente.direccion_envio || "") + '</textarea><p class="err hidden" id="err-e-direccion" role="alert"></p>' + ((cliente.direccion_envio || "").trim() ? '<p style="margin-top:0.5rem">' + mapsLinkHtml(cliente.direccion_envio) + '</p>' : "") + '</div>' +
             '</div><div id="envio-msg"></div>' +
             '<button type="submit" class="btn btn-cacao" style="margin-top:1.25rem" id="btn-envio">Guardar mis datos</button></form>' +
           '<div class="sub-block"><h4>Seguridad de tu cuenta</h4>' +
@@ -1999,10 +2562,10 @@
         var box = $("admin-body");
         box.innerHTML = '<h2 class="font-display" style="font-size:1.875rem;font-weight:800;margin:0">Panel de dueño</h2><p class="mt-4 muted">Cargando el resumen del portal…</p>';
         Promise.all([
-          sb("pedidos?select=id,cafe,cantidad,direccion_envio,descuento,estado,cobrado,creado_en,cliente_id,noticia_id,clientes(nombre,correo),noticias(texto,tipo)&order=creado_en.desc&limit=100"),
+          sb("pedidos?select=id,cafe,cantidad,direccion_envio,modo_entrega,es_regalo,regalo_para,regalo_relacion,regalo_mensaje,descuento,estado,cobrado,creado_en,cliente_id,noticia_id,clientes(nombre,correo),noticias(texto,tipo)&order=creado_en.desc&limit=100"),
           sb("clientes?select=id,nombre,correo,telefono,apodo,rol,creado_en&order=creado_en.asc&limit=200"),
           sb("noticias?select=id,texto,tipo,descuento,creado_en,cliente_id,clientes(nombre,apodo,iniciales)&order=creado_en.desc&limit=30"),
-          sb("solicitudes_evento?select=id,nombre,contacto,fecha,lugar,personas,tipo_evento,estado,creado_en&order=creado_en.desc&limit=50").catch(function () { return []; })
+          sb("solicitudes_evento?select=id,nombre,contacto,fecha,lugar,personas,tipo_evento,rotulados,tipo_rotulo,logo_url,estado,creado_en&order=creado_en.desc&limit=50").catch(function () { return []; })
         ]).then(function (res) {
           var pedidos = res[0] || [], clientes = res[1] || [], noticias = res[2] || [], solicitudes = res[3] || [];
           var pedidosHoy = pedidos.filter(function (p) { return esHoy(p.creado_en); }).length;
@@ -2017,10 +2580,12 @@
             var cli = p.clientes || {};
             var not = p.noticias;
             return '<div class="row-card"><div><strong>' + p.cantidad + ' × ' + esc(p.cafe) + '</strong>' +
+              (p.es_regalo ? ' <span class="chip chip-sol">Regalo</span>' : "") +
               (p.descuento > 0 ? ' <span class="chip chip-sol">−' + p.descuento + '%</span>' : "") +
               (p.cobrado ? ' <span class="chip">Cobrado</span>' : "") +
               '<div class="meta">' + esc(cli.nombre || "") + (cli.correo ? ' · ' + esc(cli.correo) : "") + ' · ' + esc(formatFecha(p.creado_en)) + '</div>' +
-              '<div class="meta">Envío: ' + esc(p.direccion_envio) + '</div>' +
+              '<div class="meta">Entrega: ' + entregaHtml(p, true) + '</div>' +
+              regaloDetalleHtml(p) +
               (not ? '<div class="meta">Buena noticia: “' + esc(not.texto) + '” (' + esc(tipoLabel(not.tipo)) + ')</div>' : "") +
               '</div><div style="display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap">' + selectEstado(p) +
               '<button type="button" class="toggle-btn' + (p.cobrado ? " on" : "") + '" data-cobrado="' + p.id + '" data-val="' + (p.cobrado ? "1" : "0") + '">' + (p.cobrado ? "Cobrado ✓" : "Marcar cobrado") + '</button></div></div>';
@@ -2044,10 +2609,19 @@
               '<button type="button" class="toggle-btn" data-borrar-noticia="' + n.id + '">Eliminar del muro</button></div>';
           }).join("") + '</div>' : '<p class="mt-4 muted">Todavía no hay buenas noticias.</p>';
           var eventosHtml = solicitudes.length ? '<div class="rows">' + solicitudes.map(function (s) {
+            var esRot = s.rotulados === true || s.rotulados === "true" || s.rotulados === "t";
+            var noRot = s.rotulados === false || s.rotulados === "false" || s.rotulados === "f";
+            var rotHtml = esRot
+              ? '<div class="meta">Vasos rotulados: <strong>Sí</strong>' + (s.tipo_rotulo ? ' — ' + esc(s.tipo_rotulo) : "") + '</div>'
+              : (noRot ? '<div class="meta">Vasos rotulados: No</div>' : "");
+            var logoHtml = s.logo_url && esUrl(s.logo_url)
+              ? '<div class="logo-thumb"><a href="' + esc(s.logo_url) + '" target="_blank" rel="noopener"><img src="' + esc(s.logo_url) + '" alt="Logo enviado por ' + esc(s.nombre) + ' para los vasos rotulados" loading="lazy" /></a><a class="meta-link" href="' + esc(s.logo_url) + '" target="_blank" rel="noopener">Ver logo</a></div>'
+              : "";
             return '<div class="row-card"><div><strong>' + esc(s.nombre) + '</strong>' +
               (s.tipo_evento ? ' <span class="chip chip-cafetal">' + esc(s.tipo_evento) + '</span>' : "") +
               '<div class="meta">' + esc(s.contacto) + (s.fecha ? ' · ' + esc(formatFechaDia(s.fecha)) : "") + (s.lugar ? ' · ' + esc(s.lugar) : "") + '</div>' +
-              '<div class="meta">' + (s.personas ? s.personas + ' personas · ' : "") + 'Recibida el ' + esc(formatFecha(s.creado_en)) + '</div></div>' +
+              '<div class="meta">' + (s.personas ? s.personas + ' personas · ' : "") + 'Recibida el ' + esc(formatFecha(s.creado_en)) + '</div>' +
+              rotHtml + logoHtml + '</div>' +
               selectEstadoEvento(s) + '</div>';
           }).join("") + '</div>' : '<p class="mt-4 muted">Todavía no hay solicitudes de eventos.</p>';
           box.innerHTML = '<h2 class="font-display" style="font-size:1.875rem;font-weight:800;margin:0">Panel de dueño</h2>' + statsHtml +
@@ -2115,7 +2689,7 @@
         var box = $("equipo-body");
         var esBarista = soyBarista();
         box.innerHTML = '<h2 class="font-display" style="font-size:1.875rem;font-weight:800;margin:0">Panel de ' + esc(rolCorto(cliente.rol).toLowerCase()) + '</h2><p class="mt-4 muted">Cargando pedidos…</p>';
-        var url = "pedidos?select=id,cafe,cantidad,direccion_envio,descuento,estado,cobrado,creado_en,cliente_id,noticias(texto,tipo),clientes(nombre,correo,telefono)&order=creado_en.desc&limit=100";
+        var url = "pedidos?select=id,cafe,cantidad,direccion_envio,modo_entrega,es_regalo,regalo_para,regalo_relacion,regalo_mensaje,descuento,estado,cobrado,creado_en,cliente_id,noticias(texto,tipo),clientes(nombre,correo,telefono)&order=creado_en.desc&limit=100";
         sb(url).then(function (pedidos) {
           pedidos = pedidos || [];
           if (esBarista) {
@@ -2123,8 +2697,11 @@
             var rows = hoy.length ? '<div class="rows">' + hoy.map(function (p) {
               var not = p.noticias;
               return '<div class="row-card"><div><strong>' + p.cantidad + ' × ' + esc(p.cafe) + '</strong>' +
+                (p.es_regalo ? ' <span class="chip chip-sol">Regalo</span>' : "") +
                 (p.descuento > 0 ? ' <span class="chip chip-sol">−' + p.descuento + '%</span>' : "") +
                 (not ? '<div class="meta">Buena noticia: “' + esc(not.texto) + '” (' + esc(tipoLabel(not.tipo)) + ')</div>' : "") +
+                '<div class="meta">Entrega: ' + entregaHtml(p, false) + '</div>' +
+                regaloDetalleHtml(p) +
                 '<div class="meta">' + esc(formatFecha(p.creado_en)) + '</div></div>' + selectEstado(p) + '</div>';
             }).join("") + '</div>' : '<p class="mt-4 muted">Hoy todavía no hay pedidos.</p>';
             box.innerHTML = '<h2 class="font-display" style="font-size:1.875rem;font-weight:800;margin:0">Panel de barista</h2>' +
@@ -2137,10 +2714,12 @@
           var rowsC = pedidos.length ? '<div class="rows">' + pedidos.map(function (p) {
             var cli = p.clientes || {};
             return '<div class="row-card"><div><strong>' + p.cantidad + ' × ' + esc(p.cafe) + '</strong>' +
+              (p.es_regalo ? ' <span class="chip chip-sol">Regalo</span>' : "") +
               (p.descuento > 0 ? ' <span class="chip chip-sol">−' + p.descuento + '%</span>' : "") +
               (p.cobrado ? ' <span class="chip">Cobrado</span>' : "") +
               '<div class="meta">' + esc(cli.nombre || "") + (cli.correo ? ' · ' + esc(cli.correo) : "") + (cli.telefono ? ' · ' + esc(cli.telefono) : "") + ' · ' + esc(formatFecha(p.creado_en)) + '</div>' +
-              '<div class="meta">Envío: ' + esc(p.direccion_envio) + '</div></div>' +
+              '<div class="meta">Entrega: ' + entregaHtml(p, true) + '</div>' +
+              regaloDetalleHtml(p) + '</div>' +
               '<div style="display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap">' + selectEstado(p) +
               '<button type="button" class="toggle-btn' + (p.cobrado ? " on" : "") + '" data-cobrado="' + p.id + '" data-val="' + (p.cobrado ? "1" : "0") + '">' + (p.cobrado ? "Cobrado ✓" : "Marcar cobrado") + '</button></div></div>';
           }).join("") + '</div>' : '<p class="mt-4 muted">Todavía no hay pedidos directos.</p>';
@@ -2201,6 +2780,7 @@
       $("btn-demo-cuponera").addEventListener("click", verComoSeLlena);
       renderNav();
       if (window.location.hash === "#evento") mostrarVista("eventos", true);
+      else if (window.location.hash === "#cuenta" || window.location.hash === "#admin" || window.location.hash === "#equipo") mostrarVista("cuenta", true);
       renderTipos();
       renderNoticiaForm();
       renderMenuSeccion();
@@ -2211,6 +2791,7 @@
       cargarNoticias();
       cargarMenu();
       cargarHayAdmin();
+      cargarMensajesRegalo();
     </script>
   </body>
 </html>
