@@ -675,7 +675,7 @@
         { id: "cancelado", label: "Cancelado" }
       ];
       var ROLES = [
-        { id: "admin", label: "Dueño (administrador)", corto: "Dueño" },
+        { id: "dueno", label: "Dueño (administrador)", corto: "Dueño" },
         { id: "barista", label: "Barista / Barra", corto: "Barista" },
         { id: "cajero", label: "Cajero / Recepción", corto: "Cajero" },
         { id: "cliente", label: "Cliente", corto: "Cliente" }
@@ -987,7 +987,7 @@
           .catch(function () { renderMenuSeccion(); renderPedirForm(); });
       }
       function cargarHayAdmin() {
-        return sb("clientes?select=id&rol=eq.admin&limit=1")
+        return sb("clientes?select=id&rol=eq.dueno&limit=1")
           .then(function (rows) { hayAdmin = (rows || []).length > 0; renderCuenta(); })
           .catch(function () { hayAdmin = true; });
       }
@@ -1039,7 +1039,7 @@
         }
         return false;
       }
-      function soyAdmin() { return cliente && cliente.rol === "admin"; }
+      function soyAdmin() { return cliente && cliente.rol === "dueno"; }
       function soyBarista() { return cliente && cliente.rol === "barista"; }
       function soyCajero() { return cliente && cliente.rol === "cajero"; }
 
@@ -2778,13 +2778,13 @@
         if (!contrasena) return;
         var btn = $("btn-dueno");
         btn.disabled = true; btn.textContent = "Activando…";
-        sb("clientes?select=id&rol=eq.admin&limit=1").then(function (rows) {
+        sb("clientes?select=id&rol=eq.dueno&limit=1").then(function (rows) {
           if ((rows || []).length > 0) throw new Error("Este portal ya tiene dueño; la activación está cerrada.");
           return reautenticar(contrasena);
         }).then(function () {
-          return sb("clientes?id=eq." + cliente.id, { method: "PATCH", body: { rol: "admin" } });
+          return sb("clientes?id=eq." + cliente.id, { method: "PATCH", body: { rol: "dueno" } });
         }).then(function () {
-          cliente.rol = "admin"; hayAdmin = true;
+          cliente.rol = "dueno"; hayAdmin = true;
           renderNav(); renderCuenta(); renderPaneles();
         }).catch(function (err) {
           var msg = $("dueno-msg");
@@ -2906,8 +2906,8 @@
             sel.addEventListener("change", function () {
               var id = sel.getAttribute("data-rol"), rol = sel.value;
               var msg = $("rol-msg");
-              if (id === cliente.id && rol !== "admin") {
-                sb("clientes?select=id&rol=eq.admin").then(function (rows) {
+              if (id === cliente.id && rol !== "dueno") {
+                sb("clientes?select=id&rol=eq.dueno").then(function (rows) {
                   if ((rows || []).length <= 1) {
                     if (msg) msg.innerHTML = '<p class="note note-err" role="alert" style="margin-top:1rem">El portal no puede quedarse sin dueño: asigna el rol de dueño a otra cuenta antes de cambiar el tuyo.</p>';
                     cargarPanelAdmin();
