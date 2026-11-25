@@ -732,10 +732,14 @@
       var pedidoModo = "guardada"; // modo de entrega elegido en el pedido: guardada | otra | recolecto
       var pedidoOtraDireccion = ""; // dirección escrita en “Enviar a otra dirección” (se conserva entre renders)
       var pedidoGuardarNueva = false; // cuadrito “Guardar esta dirección para mis próximos pedidos”
+      // El café gratis del canje solo puede ser uno de estos dos: al
+      // canjear el 11.º, el cliente elige cuál quiere, para él o de regalo.
+      var CAFES_GRATIS = ["Espresso", "Americano"];
       // Canje del café gratis (el 11.º): para el cliente o de regalo.
       // Se guardan en pedidos.es_regalo, pedidos.regalo_para,
       // pedidos.regalo_relacion y pedidos.regalo_mensaje.
       var regaloEsRegalo = false;    // false = “Es para mí”, true = “Es un regalo”
+      var regaloCafeGratis = "Espresso"; // café elegido para el canje (Espresso o Americano)
       var regaloParaTxt = "";        // nombre de la persona que recibe el regalo
       var regaloRelacionTxt = "";    // parentesco de esa persona con quien obsequia
       var regaloMensajeTxt = "";     // palabras para esa persona (sugeridas o propias)
@@ -1031,6 +1035,58 @@
         var n = miNoticiaDeHoy();
         return n && !primerPedidoHoyHecho() ? n.descuento : 0;
       }
+      // ¿La categoría de un producto es de café? La clasificación es por
+      // la CATEGORÍA del menú, no por el nombre del producto: dan sello
+      // las categorías de café (“Café caliente”, “Café frío” y cualquier
+      // otra categoría de café que se agregue al menú, porque empiezan
+      // con “Café”); las de acompañar (“Para acompañar…”: concha, galleta,
+      // oreja) no dan sello, aunque el menú cambie de productos.
+      function esCategoriaCafe(cat) {
+        var c = String(cat || "").trim().toLowerCase();
+        return c.indexOf("café") === 0 || c.indexOf("cafe") === 0;
+      }
+      // Categoría de un producto según el menú vigente (con la carta
+      // local como respaldo). Si el producto ya no está en el menú
+      // (renombrado o retirado), regresa null.
+      function categoriaDeProducto(nombre) {
+        var n = String(nombre || "").trim().toLowerCase();
+        if (!n) return null;
+        var todos = menuItems.concat(MENU_LOCAL);
+        for (var i = 0; i < todos.length; i++) {
+          if (String(todos[i].nombre || "").trim().toLowerCase() === n) return todos[i].categoria || "";
+        }
+        return null;
+      }
+      // Qué aporta un pedido a la cuponera. El detalle del pedido
+      // (pedidos.cafe) es texto con un renglón por producto:
+      // “2 × Espresso, 1 × Concha”. Solo cuentan los cafés PAGADOS: los
+      // productos de acompañar no dan sello. El café del canje va marcado
+      // al inicio como “1 × Espresso (gratis)”: ese renglón gasta el
+      // gratis guardado y tampoco da sello. Un producto que ya no aparece
+      // en el menú cuenta como café (así se contaba antes de clasificar
+      // por categoría y no se le quitan sellos a nadie).
+      function cafesDePedido(p) {
+        var texto = String(p.cafe || "").trim();
+        var pagados = 0, canjea = false, reconocidos = 0;
+        if (texto) {
+          texto.split(",").forEach(function (parte) {
+            var m = /^\s*(\d+)\s*×\s*(.+?)\s*$/.exec(parte);
+            if (!m) return;
+            reconocidos++;
+            var nombre = m[2];
+            if (/\(gratis\)\s*$/i.test(nombre)) { canjea = true; return; } // el café gratis no da sello
+            var cat = categoriaDeProducto(nombre);
+            if (cat === null || esCategoriaCafe(cat)) pagados += parseInt(m[1], 10) || 0;
+          });
+        }
+        if (!reconocidos) {
+          // Formato anterior: pedidos.cafe era solo el nombre del
+          // producto y la cantidad iba en pedidos.cantidad.
+          var cat0 = categoriaDeProducto(texto);
+          pagados = texto && (cat0 === null || esCategoriaCafe(cat0)) ? (Number(p.cantidad) || 0) : 0;
+        }
+        return { pagados: pagados, canjea: canjea };
+      }
       // La cuponera se calcula recorriendo los pedidos en orden, no con un
       // módulo sobre el total: cada 10 cafés pagados ganan un café gratis
       // que queda GUARDADO hasta que un pedido lo canjea. Antes era
@@ -1043,13 +1099,20 @@
       function estadoCuponeraDe(pedidos) {
         var lista = (pedidos || []).filter(function (p) { return p.estado !== "cancelado"; }).slice()
           .sort(function (a, b) { return new Date(a.creado_en) - new Date(b.creado_en); });
-        var sellos = 0;  // cafés contados en pedidos no cancelados (para los conteos)
+        var sellos = 0;  // cafés pagados contados en pedidos no cancelados (para los conteos)
         var ciclo = 0;   // cafés pagados del ciclo actual, de 0 a 9 (al llegar a 10 se gana el gratis)
         var gratis = 0;  // cafés gratis ganados y todavía no canjeados
         lista.forEach(function (p) {
-          var n = Number(p.cantidad) || 0;
+          var d = cafesDePedido(p);
+          var n = d.pagados;
+          if (d.canjea) {
+            if (gratis > 0) gratis -= 1; // este pedido trae el café gratis marcado: lo gasta
+          } else if (gratis > 0 && n > 0) {
+            // Pedidos de antes de la marca “(gratis)”: el primer café
+            // pagado del pedido era el del canje, tampoco da sello.
+            gratis -= 1; n -= 1;
+          }
           sellos += n;
-          if (gratis > 0 && n > 0) { gratis -= 1; n -= 1; } // este pedido canjea un café gratis
           var avance = ciclo + n;
           gratis += Math.floor(avance / 10);
           ciclo = avance % 10;
@@ -1726,6 +1789,12 @@
           bloqueGratis =
           '<div class="field" style="margin-top:1.5rem;border:2px solid var(--cempasuchil);border-radius:1rem;padding:1rem 1.125rem;background:rgba(242,168,29,0.12)">' +
           '<p style="margin:0;line-height:1.55"><strong>¡Tu café número 11 va por nuestra cuenta!</strong> Este pedido usa tu café gratis de la cuponera.</p>' +
+          '<span class="label" id="p-gratis-cafe-label" style="margin-top:1rem">Elige tu café gratis</span>' +
+          '<div class="entrega-opts" role="radiogroup" aria-labelledby="p-gratis-cafe-label">' +
+          CAFES_GRATIS.map(function (nombre) {
+            return '<button type="button" role="radio" aria-checked="' + (regaloCafeGratis === nombre ? "true" : "false") + '" class="entrega-opt' + (regaloCafeGratis === nombre ? " on" : "") + '" data-gratis-cafe="' + esc(nombre) + '"><span class="dot" aria-hidden="true"></span>' + esc(nombre) + '</button>';
+          }).join("") +
+          '</div>' +
           '<span class="label" id="p-regalo-label" style="margin-top:1rem">¿Para quién es tu café gratis?</span>' +
           '<div class="entrega-opts" role="radiogroup" aria-labelledby="p-regalo-label">' +
           '<button type="button" role="radio" aria-checked="' + (!regaloEsRegalo ? "true" : "false") + '" class="entrega-opt' + (!regaloEsRegalo ? " on" : "") + '" data-regalo="mio"><span class="dot" aria-hidden="true"></span>Me lo quedo yo</button>' +
@@ -1808,6 +1877,17 @@
         });
         var guardaChk = $("p-guardar-nueva");
         if (guardaChk) guardaChk.addEventListener("change", function () { pedidoGuardarNueva = guardaChk.checked; });
+        // Canje del café gratis: cuál café se lleva gratis (Espresso o Americano).
+        Array.prototype.forEach.call(box.querySelectorAll("[data-gratis-cafe]"), function (b) {
+          b.addEventListener("click", function () {
+            regaloCafeGratis = b.getAttribute("data-gratis-cafe");
+            Array.prototype.forEach.call(box.querySelectorAll("[data-gratis-cafe]"), function (x) {
+              var activo = x.getAttribute("data-gratis-cafe") === regaloCafeGratis;
+              x.classList.toggle("on", activo);
+              x.setAttribute("aria-checked", activo ? "true" : "false");
+            });
+          });
+        });
         // Canje del café gratis: para mí o de regalo, y cómo lo recibe la persona.
         Array.prototype.forEach.call(box.querySelectorAll("[data-regalo]"), function (b) {
           b.addEventListener("click", function () {
@@ -1858,20 +1938,24 @@
       }
       function onPedir(ev) {
         ev.preventDefault();
-        // El pedido se arma solo con lo agregado desde el menú “Pide tu
+        // El pedido se arma con lo agregado desde el menú “Pide tu
         // café”: el café del pedido es el detalle del carrito y la cantidad
-        // es el total de productos. Sin nada agregado, no hay pedido que
-        // confirmar y se invita a elegir del menú.
+        // es el total de productos. Sin nada agregado y sin café gratis
+        // por canjear, no hay pedido que confirmar y se invita a elegir
+        // del menú; con un gratis guardado, el pedido puede ser solo ese
+        // café.
         var usaCarrito = carrito.length > 0;
+        var tocaGratis = miCuponera().siguienteGratis;
         var cafe, cantidadPedido;
         var totalesPedido = usaCarrito ? carritoTotales() : { n: 0, total: 0 };
-        if (usaCarrito) {
-          cafe = carrito.map(function (x) { return x.cantidad + " × " + x.nombre; }).join(", ");
-          cantidadPedido = totalesPedido.n;
-        } else {
-          cafe = "";
-          cantidadPedido = 0;
-        }
+        var lineasPedido = [];
+        // El café del canje va primero y marcado “(gratis)”: así la
+        // cuponera sabe que ese café gasta el gratis y no da sello,
+        // aunque el pedido traiga además otros cafés pagados que sí dan.
+        if (tocaGratis) lineasPedido.push("1 × " + regaloCafeGratis + " (gratis)");
+        if (usaCarrito) lineasPedido.push(carrito.map(function (x) { return x.cantidad + " × " + x.nombre; }).join(", "));
+        cafe = lineasPedido.join(", ");
+        cantidadPedido = totalesPedido.n + (tocaGratis ? 1 : 0);
         // Canje del café gratis: si toca el 11.º y el cliente eligió
         // regalarlo, el pedido va a nombre de esa persona: se guarda
         // es_regalo y regalo_para, y la entrega es a su dirección
@@ -1880,7 +1964,6 @@
         // la dirección guardada (sin escribir nada), otra dirección solo
         // para este pedido (que solo se guarda si el cliente marca el
         // cuadrito) o recolecto en cafetería (sin dirección).
-        var tocaGratis = miCuponera().siguienteGratis;
         var esRegalo = !!(tocaGratis && regaloEsRegalo);
         var regaloPara = null;
         var regaloRelacion = null;
@@ -1921,7 +2004,7 @@
         }
         var ok = true;
         var eD = $("err-p-entrega");
-        if (!usaCarrito) {
+        if (!usaCarrito && !tocaGratis) {
           var msgVacio = $("pedido-msg");
           if (msgVacio) msgVacio.innerHTML = '<p class="note note-err" role="alert" style="margin-top:1rem">Aún no hay nada aquí. Elige tu café en el menú.</p>';
           ok = false;
@@ -1946,7 +2029,7 @@
         } }).then(function () {
           if (usaCarrito) { carrito = []; renderMenuSeccion(); }
           pedidoOtraDireccion = ""; pedidoGuardarNueva = false;
-          regaloEsRegalo = false; regaloParaTxt = ""; regaloRelacionTxt = ""; regaloMensajeTxt = ""; regaloDireccionTxt = ""; regaloModoEntrega = "envio";
+          regaloEsRegalo = false; regaloParaTxt = ""; regaloRelacionTxt = ""; regaloMensajeTxt = ""; regaloDireccionTxt = ""; regaloModoEntrega = "envio"; regaloCafeGratis = "Espresso";
           // La dirección nueva solo reemplaza a la guardada si el cliente
           // marcó “Guardar esta dirección para mis próximos pedidos”.
           if (modo === "otra" && guardarNueva && direccion !== (cliente.direccion_envio || "")) {
@@ -2672,7 +2755,7 @@
       }
       function cerrarSesion() {
         authApi("logout", null, "POST").catch(function () {});
-        accessToken = ""; cliente = null; misPedidos = []; misNoticias = []; resultadoCajero = null; busquedaCajero = ""; cupCaidaPendiente = null; cupSellosPrevios = null; carrito = []; regaloEsRegalo = false; regaloParaTxt = ""; regaloRelacionTxt = ""; regaloMensajeTxt = ""; regaloDireccionTxt = ""; regaloModoEntrega = "envio"; rgCafeId = ""; rgCantidad = 1; rgParaTxt = ""; rgRelacionTxt = ""; rgMensajeTxt = ""; rgDireccionTxt = ""; rgModoEntrega = "envio"; rgOk = "";
+        accessToken = ""; cliente = null; misPedidos = []; misNoticias = []; resultadoCajero = null; busquedaCajero = ""; cupCaidaPendiente = null; cupSellosPrevios = null; carrito = []; regaloEsRegalo = false; regaloCafeGratis = "Espresso"; regaloParaTxt = ""; regaloRelacionTxt = ""; regaloMensajeTxt = ""; regaloDireccionTxt = ""; regaloModoEntrega = "envio"; rgCafeId = ""; rgCantidad = 1; rgParaTxt = ""; rgRelacionTxt = ""; rgMensajeTxt = ""; rgDireccionTxt = ""; rgModoEntrega = "envio"; rgOk = "";
         renderNav(); renderCuenta(); renderNoticiaForm(); renderPedirForm(); renderMisPedidos(); renderCuponera(); renderPaneles(); renderEventoForm(); renderMenuSeccion();
         cargarReacciones();
       }
