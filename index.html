@@ -221,6 +221,8 @@
       .qty-sm .n { font-size: 1.125rem; min-width: 1.5rem; }
       .cl-total { font-weight: 800; white-space: nowrap; }
       .cl-del { background: none; border: none; color: var(--chile); font: inherit; font-size: 0.85rem; font-weight: 700; cursor: pointer; padding: 0.25rem; text-decoration: underline; text-underline-offset: 3px; }
+      .cart-sub-row { margin-top: 0.5rem; display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; font-size: 0.95rem; color: rgba(59,34,24,0.75); }
+      .cart-sub-row .desc-monto { font-weight: 800; color: var(--cafetal); }
       .cart-total-row { margin-top: 0.75rem; display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; font-size: 1.05rem; }
       .cart-total-row strong { font-family: var(--font-display); font-size: 1.25rem; font-weight: 800; }
 
@@ -753,7 +755,7 @@
       var rgOk = "";                 // mensaje de confirmación tras regalar
       var busquedaCajero = "", resultadoCajero = null;
       var cupSellosPrevios = null;   // total de sellos visto en el render anterior de la cuponera
-      var cupCaidaPendiente = null;  // { totalAntes } solo cuando un pedido nuevo suma cafés: esos sellos son los que caen
+      var cupCaidaPendiente = null;  // { cicloAntes, gratisAntes } solo cuando un pedido nuevo suma cafés: esos sellos son los que caen
       var cupCaidaObserver = null;   // observa cuándo la cuponera entra en pantalla para soltar el sello
       var cupDemoActiva = false;     // true mientras corre la demostración “Ver cómo se llena”
       var cupDemoTimers = [];        // temporizadores de la demostración, para poder cerrarla limpia
@@ -1021,23 +1023,43 @@
         return misNoticias.find(function (n) { return esHoy(n.creado_en) && n.descuento > 0; }) || null;
       }
       function primerPedidoHoyHecho() {
-        return misPedidos.some(function (p) { return esHoy(p.creado_en); });
+        // Un pedido cancelado no cuenta como “primer pedido del día”: no
+        // debe gastar el descuento de la buena noticia.
+        return misPedidos.some(function (p) { return esHoy(p.creado_en) && p.estado !== "cancelado"; });
       }
       function descuentoActivoHoy() {
         var n = miNoticiaDeHoy();
         return n && !primerPedidoHoyHecho() ? n.descuento : 0;
       }
+      // La cuponera se calcula recorriendo los pedidos en orden, no con un
+      // módulo sobre el total: cada 10 cafés pagados ganan un café gratis
+      // que queda GUARDADO hasta que un pedido lo canjea. Antes era
+      // sellos % 11: al pasar de 10 productos el marcador volvía a 0 y el
+      // café 11 se perdía si no se canjeaba exactamente en ese punto.
+      // El pedido que canjea no suma sello por el café gratis, pero sí por
+      // los demás cafés pagados que traiga, así que comprar de más nunca
+      // borra el gratis. Los pedidos cancelados no cuentan: ni suman
+      // sellos ni gastan un café gratis.
       function estadoCuponeraDe(pedidos) {
-        var sellos = (pedidos || []).reduce(function (a, p) { return a + (Number(p.cantidad) || 0); }, 0);
-        return { sellos: sellos, ciclo: sellos % 11, gratisDisponibles: Math.floor(sellos / 11), siguienteGratis: (sellos % 11) === 10 };
+        var lista = (pedidos || []).filter(function (p) { return p.estado !== "cancelado"; }).slice()
+          .sort(function (a, b) { return new Date(a.creado_en) - new Date(b.creado_en); });
+        var sellos = 0;  // cafés contados en pedidos no cancelados (para los conteos)
+        var ciclo = 0;   // cafés pagados del ciclo actual, de 0 a 9 (al llegar a 10 se gana el gratis)
+        var gratis = 0;  // cafés gratis ganados y todavía no canjeados
+        lista.forEach(function (p) {
+          var n = Number(p.cantidad) || 0;
+          sellos += n;
+          if (gratis > 0 && n > 0) { gratis -= 1; n -= 1; } // este pedido canjea un café gratis
+          var avance = ciclo + n;
+          gratis += Math.floor(avance / 10);
+          ciclo = avance % 10;
+        });
+        return { sellos: sellos, ciclo: ciclo, gratisDisponibles: gratis, siguienteGratis: gratis > 0 };
       }
       function miCuponera() { return estadoCuponeraDe(misPedidos); }
-      // ¿Entre estos dos totales se completó el 5.º café de un ciclo?
-      function completoElQuinto(totalAntes, totalDespues) {
-        for (var t = totalAntes + 1; t <= totalDespues; t++) {
-          if (t % 11 === 5) return true;
-        }
-        return false;
+      // ¿Entre estos dos estados de la cuponera se completó el 5.º café de un ciclo?
+      function completoElQuinto(antes, despues) {
+        return antes.ciclo < 5 && (despues.ciclo >= 5 || despues.gratisDisponibles > antes.gratisDisponibles);
       }
       function soyAdmin() { return cliente && cliente.rol === "dueno"; }
       function soyBarista() { return cliente && cliente.rol === "barista"; }
@@ -1614,9 +1636,23 @@
             '<span class="cl-total">' + dinero2(x.precio * x.cantidad) + '</span>' +
             '<button type="button" class="cl-del" data-cart-del="' + esc(x.id) + '">Quitar</button></li>';
         }).join("");
+        // El descuento de la buena noticia se resta del monto aquí mismo:
+        // subtotal, renglón del −10% y total ya con el descuento aplicado.
+        // Antes solo se guardaba el porcentaje en el pedido y ningún total
+        // de la página lo reflejaba.
+        var activo = descuentoActivoHoy();
+        var totalesHtml;
+        if (activo > 0) {
+          var descMonto = t.total * activo / 100;
+          totalesHtml =
+            '<div class="cart-sub-row"><span>Subtotal</span><span>' + dinero2(t.total) + '</span></div>' +
+            '<div class="cart-sub-row"><span>Tu buena noticia de hoy (−' + activo + '%)</span><span class="desc-monto">−' + dinero2(descMonto) + '</span></div>' +
+            '<div class="cart-total-row"><span>Total de tu pedido</span><strong>' + dinero2(t.total - descMonto) + '</strong></div>';
+        } else {
+          totalesHtml = '<div class="cart-total-row"><span>Total de tu pedido</span><strong>' + dinero2(t.total) + '</strong></div>';
+        }
         return '<p class="hint" style="margin-top:0.5rem">Esto es lo que agregaste desde el menú. Ajusta las cantidades aquí o <a href="#menu" class="link-cafetal">sigue eligiendo en “Pide tu café”</a>.</p>' +
-          '<ul class="cart-lines">' + lines + '</ul>' +
-          '<div class="cart-total-row"><span>Total de tu pedido</span><strong>' + dinero2(t.total) + '</strong></div>';
+          '<ul class="cart-lines">' + lines + '</ul>' + totalesHtml;
       }
       // El paso 1 de Pedir cuando todavía no se agrega nada desde el menú:
       // un mensaje corto que invita a elegir en “Pide tu café”, sin listar
@@ -1680,7 +1716,7 @@
           ? bloqueCarrito()
           : bloquePedidoVacio();
         var guardada = (cliente.direccion_envio || "").trim();
-        // Canje del café gratis: cuando la cuponera está en 10 sellos, el
+        // Canje del café gratis: cuando hay un café gratis guardado, el
         // siguiente café (el 11.º) es gratis y el cliente elige si es para
         // él o si se lo regala a alguien. Si lo regala, la entrega normal
         // del pedido se sustituye por los datos de esa persona.
@@ -1828,9 +1864,10 @@
         // confirmar y se invita a elegir del menú.
         var usaCarrito = carrito.length > 0;
         var cafe, cantidadPedido;
+        var totalesPedido = usaCarrito ? carritoTotales() : { n: 0, total: 0 };
         if (usaCarrito) {
           cafe = carrito.map(function (x) { return x.cantidad + " × " + x.nombre; }).join(", ");
-          cantidadPedido = carritoTotales().n;
+          cantidadPedido = totalesPedido.n;
         } else {
           cafe = "";
           cantidadPedido = 0;
@@ -1917,7 +1954,7 @@
               .then(function () { cliente.direccion_envio = direccion; });
           }
         }).then(function () {
-          cupCaidaPendiente = { totalAntes: cupAntes.sellos };
+          cupCaidaPendiente = { cicloAntes: cupAntes.ciclo, gratisAntes: cupAntes.gratisDisponibles };
           return cargarMisPedidos();
         }).then(function () {
           var cup = miCuponera();
@@ -1925,6 +1962,7 @@
           if (msg) {
             msg.innerHTML = '<div class="note note-ok" role="status" style="margin-top:1rem"><p style="font-weight:700;margin:0">¡Pedido registrado! Te lo preparamos en Cualli.</p>' +
               (esRegalo ? '<p style="margin-top:0.25rem;color:rgba(255,244,220,0.9)">Tu café gratis va de regalo para <strong>' + esc(regaloPara) + '</strong>: ' + (modo === "recolecto" ? "pasa por él a la cafetería, a su nombre." : "se lo enviamos a su dirección.") + (regaloMensaje ? ' Lleva tus palabras: “' + esc(regaloMensaje) + '”' : "") + '</p>' : "") +
+              (activo > 0 ? '<p style="margin-top:0.25rem;color:rgba(255,244,220,0.9)">Tu buena noticia de hoy te ahorró ' + dinero2(totalesPedido.total * activo / 100) + ': tu pedido de ' + dinero2(totalesPedido.total) + ' quedó en ' + dinero2(totalesPedido.total - totalesPedido.total * activo / 100) + '.</p>' : "") +
               '<p style="margin-top:0.25rem;color:rgba(255,244,220,0.9)">Tu cuponera lleva ' + cup.sellos + (cup.sellos === 1 ? " café acumulado." : " cafés acumulados.") + '</p>' +
               (esRegalo ? '<div style="margin-top:0.875rem;border-top:1px solid rgba(255,244,220,0.35);padding-top:0.875rem"><button type="button" class="btn btn-sol btn-sm" id="btn-compartir-regalo">Compartir en el muro</button><p id="pedido-share-msg" role="status" style="margin:0.5rem 0 0;color:rgba(255,244,220,0.92)"></p></div>' : "") +
               '</div>';
@@ -1932,7 +1970,7 @@
           var btnCompartirRegalo = $("btn-compartir-regalo");
           if (btnCompartirRegalo) btnCompartirRegalo.addEventListener("click", compartirCafeRegalado);
           if (!cupAntes.siguienteGratis && cup.siguienteGratis) lanzarCelebracion();
-          else if (completoElQuinto(cupAntes.sellos, cup.sellos)) lanzarMiniCelebracion();
+          else if (completoElQuinto(cupAntes, cup)) lanzarMiniCelebracion();
           btn.disabled = false; btn.textContent = "Confirmar pedido directo";
           if (!esRegalo && cup.sellos > cupAntes.sellos) {
             // Baja hasta la cuponera para que se vea el granito caer en su lugar.
@@ -2120,18 +2158,17 @@
         // Solo caen los sellos que suma un pedido recién confirmado, no los que ya
         // traía la cuponera al iniciar sesión o al cargar la página.
         var nuevos = [];
-        if (cupCaidaPendiente && cup.sellos > cupCaidaPendiente.totalAntes) {
-          var prevCiclo = cupCaidaPendiente.totalAntes % 11;
-          var agregados = cup.sellos - cupCaidaPendiente.totalAntes;
-          for (var k = 0; k < agregados; k++) {
-            var idx = (prevCiclo + k) % 11;
-            if (nuevos.indexOf(idx) === -1) nuevos.push(idx);
+        if (cupCaidaPendiente) {
+          // Caen los sellos pagados que este pedido sumó al ciclo y, si el
+          // pedido ganó el café gratis, también cae su sello.
+          for (var k = 0; k < 10; k++) {
+            if (k < cup.ciclo && k >= cupCaidaPendiente.cicloAntes) nuevos.push(k);
           }
-          nuevos = nuevos.filter(function (idx) {
-            return idx === 10 ? cup.ciclo === 10 : (cup.ciclo === 10 || idx < cup.ciclo);
-          });
+          if (cup.siguienteGratis && cupCaidaPendiente.gratisAntes === 0) nuevos.push(10);
           nuevos.sort(function (a, b) {
-            return ((a - prevCiclo + 11) % 11) - ((b - prevCiclo + 11) % 11);
+            var oa = ((a - cupCaidaPendiente.cicloAntes) % 11 + 11) % 11;
+            var ob = ((b - cupCaidaPendiente.cicloAntes) % 11 + 11) % 11;
+            return oa - ob;
           });
         }
         if (cupCaidaPendiente) cupCaidaPendiente = null;
@@ -2141,10 +2178,10 @@
           ? "¡Tu café número 11 va por nuestra cuenta!"
           : "Ya casi: te " + (faltan === 1 ? "falta " : "faltan ") + faltan + (faltan === 1 ? " café" : " cafés") + " para que el 11.º sea gratis";
         var estado = cup.siguienteGratis
-          ? "¡Ya juntaste tus 10 cafés! El siguiente, el número 11, va por nuestra cuenta."
-          : "Llevas " + cup.ciclo + " de 10 cafés en este ciclo; el número 11 es gratis" + (cup.gratisDisponibles > 0 ? " y ya ganaste " + cup.gratisDisponibles + " café(s) gratis" : "") + ". Cada pedido directo suma sus cafés aquí.";
+          ? "¡Ya juntaste tus 10 cafés! Tu café número 11 va por nuestra cuenta y se queda guardado hasta que lo pidas, para ti o de regalo." + (cup.gratisDisponibles > 1 ? " Tienes " + cup.gratisDisponibles + " cafés gratis guardados." : "") + (cup.ciclo > 0 ? " Además ya llevas " + cup.ciclo + " de 10 para el siguiente." : "")
+          : "Llevas " + cup.ciclo + " de 10 cafés en este ciclo; el número 11 es gratis. Cada pedido directo suma sus cafés aquí.";
         box.innerHTML =
-          sellosHtml(cup.ciclo, nuevos) +
+          sellosHtml(cup.ciclo, nuevos, cup.siguienteGratis) +
           '<div class="cuponera-progress"><div class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="10" aria-valuenow="' + cup.ciclo + '" aria-label="Progreso hacia tu café gratis: ' + cup.ciclo + ' de 10 cafés pagados; el número 11 es gratis"><div style="width:' + Math.min(100, cup.ciclo / 10 * 100) + '%"></div></div>' +
           '<p class="progress-msg" role="status">' + esc(msgProgreso) + '</p></div>' +
           '<p class="cuponera-estado" role="status">' + esc(estado) + '</p>' +
@@ -2201,7 +2238,7 @@
         return Promise.all([muro, mias]);
       }
       // Momento 1: el cliente completó la cuponera y ganó su café gratis
-      // (la cuponera está en 10 y el siguiente, el 11.º, va por cuenta de Cualli).
+      // (hay un café gratis guardado y el siguiente, el 11.º, va por cuenta de Cualli).
       function compartirLoConsegui() {
         if (!cliente) return;
         if (!miCuponera().siguienteGratis) return;
@@ -2219,12 +2256,12 @@
         var surco = lleno ? "#3b2218" : "rgba(255,244,220,0.6)";
         return '<svg viewBox="0 0 64 64" width="34" height="34" aria-hidden="true"><g transform="rotate(-18 32 32)"><ellipse cx="32" cy="32" rx="17" ry="22" fill="' + relleno + '" stroke="' + borde + '" stroke-width="2.5"/><path d="M32 13c-5 5.5 5 9.5 0 15-4.5 5.5-2.5 12 0 19" fill="none" stroke="' + surco + '" stroke-width="3.5" stroke-linecap="round"/></g></svg>';
       }
-      function sellosHtml(ciclo, nuevos) {
+      function sellosHtml(ciclo, nuevos, gratisListo) {
         nuevos = nuevos || [];
         var lis = "";
         for (var i = 0; i < 11; i++) {
           var esGratis = i === 10;
-          var lleno = esGratis ? ciclo === 10 : i < ciclo;
+          var lleno = esGratis ? (ciclo === 10 || !!gratisListo) : i < ciclo;
           var ordenCaida = nuevos.indexOf(i);
           var cae = lleno && ordenCaida !== -1;
           // Con 9 de 10, el sello gratis todavía no se gana pero ya brilla: falta un solo café.
